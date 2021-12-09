@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # Mark executable
-add_executable(Quake src/g_main.cpp)
+add_executable(Quake src/g_main.cpp "src/resource/loader/QLoader.h" "src/resource/loader/QLoader.cpp")
 
 # Configure SDL2
 find_package(SDL2 CONFIG REQUIRED)
