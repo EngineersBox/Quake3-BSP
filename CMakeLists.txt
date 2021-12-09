@@ -1,9 +1,15 @@
-﻿# CMakeList.txt : Top-level CMake project file, do global configuration
-# and include sub-projects here.
-#
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 
-project ("Quake Id Tech 2")
+project(Quake VERSION 1.0)
 
-# Include sub-projects.
-add_subdirectory ("Quake Id Tech 2")
+# C++ standard
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_VERBOSE_MAKEFILE ON)
+
+# Mark executable
+add_executable(Quake src/g_main.cpp)
+
+# Configure SDL2
+find_package(SDL2 CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE SDL2::SDL2 SDL2::SDL2main)
