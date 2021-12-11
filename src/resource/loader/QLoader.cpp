@@ -5,23 +5,22 @@
 #include <iostream>
 #pragma pack(pop, QLOADER_H)
 
-bool isValid(const TMapQ3& pMap) {
+bool isValid(const QMapQ3& pMap) {
 	return strncmp(pMap.mHeader.mMagicNumber, cMagicNumber.c_str(), 4) == 0
 		&& pMap.mHeader.mVersion == cVersion;
 }
 
-bool readHeader(FILE* pFile, TMapQ3& pMap) {
-	fread(&pMap.mHeader, 1, sizeof(THeader), pFile);
+bool readHeader(FILE* pFile, QMapQ3& pMap) {
+	fread(&pMap.mHeader, 1, sizeof(QHeader), pFile);
 	return isValid(pMap);
 }
 
 template <typename C>
-void readElement(
-	FILE* pFile,
-	TMapQ3& pMap,
-	const int lumpIdx,
-	std::vector<C> &elemVector) {
-	int lNbElements = pMap.mHeader.mLumps[lumpIdx].mLength / sizeof(C);
+void readElement(FILE* pFile,
+				 QMapQ3& pMap,
+				 const int lumpIdx,
+				 std::vector<C> &elemVector) {
+	const int lNbElements = pMap.mHeader.mLumps[lumpIdx].mLength / sizeof(C);
 	fseek(pFile, pMap.mHeader.mLumps[lumpIdx].mOffset, SEEK_SET);
 	for (int lElementCounter = 0; lElementCounter < lNbElements; ++lElementCounter) {
 		C lElement;
@@ -30,78 +29,74 @@ void readElement(
 	}
 }
 
-void readTexture(FILE* pFile, TMapQ3& pMap) {
-	readElement<TTexture>(pFile, pMap, cTextureLump, pMap.mTextures);
+void readTexture(FILE* pFile, QMapQ3& pMap) {
+	readElement<QTexture>(pFile,pMap, cTextureLump, pMap.mTextures);
 }
 
-void readEntity(FILE* pFile, TMapQ3& pMap) {
-	// Set the entity size.
+void readEntity(FILE* pFile, QMapQ3& pMap) {
 	pMap.mEntity.mSize = pMap.mHeader.mLumps[cEntityLump].mLength;
-	// Allocate the entity buffer
 	pMap.mEntity.mBuffer = new char[pMap.mEntity.mSize];
-	// Go to the start of the chunk
 	fseek(pFile, pMap.mHeader.mLumps[cEntityLump].mOffset, SEEK_SET);
-	// Read the buffer
 	fread(pMap.mEntity.mBuffer, pMap.mEntity.mSize, sizeof(char), pFile);
 }
 
-void readPlane(FILE* pFile, TMapQ3& pMap) {
-	readElement<TPlane>(pFile, pMap, cPlaneLump, pMap.mPlanes);
+void readPlane(FILE* pFile, QMapQ3& pMap) {
+	readElement<QPlane>(pFile, pMap, cPlaneLump, pMap.mPlanes);
 }
 
-void readNode(FILE* pFile, TMapQ3& pMap) {
-	readElement<TNode>(pFile, pMap, cNodeLump, pMap.mNodes);
+void readNode(FILE* pFile, QMapQ3& pMap) {
+	readElement<QNode>(pFile, pMap, cNodeLump, pMap.mNodes);
 }
 
-void readLeaf(FILE* pFile, TMapQ3& pMap) {
-	readElement<TLeaf>(pFile, pMap, cLeafLump, pMap.mLeaves);
+void readLeaf(FILE* pFile, QMapQ3& pMap) {
+	readElement<QLeaf>(pFile, pMap, cLeafLump, pMap.mLeaves);
 }
 
-void readLeafFace(FILE* pFile, TMapQ3& pMap) {
-	readElement<TLeafFace>(pFile, pMap, cLeafFaceLump, pMap.mLeafFaces);
+void readLeafFace(FILE* pFile, QMapQ3& pMap) {
+	readElement<QLeafFace>(pFile, pMap, cLeafFaceLump, pMap.mLeafFaces);
 }
 
-void readLeafBrush(FILE* pFile, TMapQ3& pMap) {
-	readElement<TLeafBrush>(pFile, pMap, cLeafBrushLump, pMap.mLeafBrushes);
+void readLeafBrush(FILE* pFile, QMapQ3& pMap) {
+	readElement<QLeafBrush>(pFile, pMap, cLeafBrushLump, pMap.mLeafBrushes);
 }
 
-void readModel(FILE* pFile, TMapQ3& pMap){
-	readElement<TModel>(pFile, pMap, cModelLump, pMap.mModels);
+void readModel(FILE* pFile, QMapQ3& pMap){
+	readElement<QModel>(pFile, pMap, cModelLump, pMap.mModels);
 }
 
-void readBrush(FILE* pFile, TMapQ3& pMap) {
-	readElement<TBrush>(pFile, pMap, cBrushLump, pMap.mBrushes);
+void readBrush(FILE* pFile, QMapQ3& pMap) {
+	readElement<QBrush>(pFile, pMap, cBrushLump, pMap.mBrushes);
 }
 
-void readBrushSide(FILE* pFile, TMapQ3& pMap) {
-	readElement<TBrushSide>(pFile, pMap, cBrushSideLump, pMap.mBrushSides);
+void readBrushSide(FILE* pFile, QMapQ3& pMap) {
+	readElement<QBrushSide>(pFile, pMap, cBrushSideLump, pMap.mBrushSides);
 }
 
-void readVertex(FILE* pFile, TMapQ3& pMap) {
-	readElement<TVertex>(pFile, pMap, cVertexLump, pMap.mVertices);
+void readVertex(FILE* pFile, QMapQ3& pMap) {
+	readElement<QVertex>(pFile, pMap, cVertexLump, pMap.mVertices);
 }
 
-void readMeshVert(FILE* pFile, TMapQ3& pMap) {
-	readElement<TMeshVert>(pFile, pMap, cMeshVertLump, pMap.mMeshVertices);
+void readMeshVert(FILE* pFile, QMapQ3& pMap) {
+	readElement<QMeshVert>(pFile, pMap, cMeshVertLump, pMap.mMeshVertices);
 }
 
-void readEffect(FILE* pFile, TMapQ3& pMap) {
-	readElement<TEffect>(pFile, pMap, cEffectLump, pMap.mEffects);
+void readEffect(FILE* pFile, QMapQ3& pMap) {
+	readElement<QEffect>(pFile, pMap, cEffectLump, pMap.mEffects);
 }
 
-void readFace(FILE* pFile, TMapQ3& pMap) {
-	readElement<TFace>(pFile, pMap, cFaceLump, pMap.mFaces);
+void readFace(FILE* pFile, QMapQ3& pMap) {
+	readElement<QFace>(pFile, pMap, cFaceLump, pMap.mFaces);
 }
 
-void readLightMap(FILE* pFile, TMapQ3& pMap) {
-	readElement<TLightMap>(pFile, pMap, cLightMapLump, pMap.mLightMaps);
+void readLightMap(FILE* pFile, QMapQ3& pMap) {
+	readElement<QLightMap>(pFile, pMap, cLightMapLump, pMap.mLightMaps);
 }
 
-void readLightVol(FILE* pFile, TMapQ3& pMap) {
-	readElement<TLightVol>(pFile, pMap, cLightVolLump, pMap.mLightVols);
+void readLightVol(FILE* pFile, QMapQ3& pMap) {
+	readElement<QLightVol>(pFile, pMap, cLightVolLump, pMap.mLightVols);
 }
 
-void readVisData(FILE* pFile, TMapQ3& pMap) {
+void readVisData(FILE* pFile, QMapQ3& pMap) {
 	fseek(pFile, pMap.mHeader.mLumps[cVisDataLump].mOffset, SEEK_SET);
 
 	fread(&pMap.mVisData.mNbClusters, 1, sizeof(int), pFile);
@@ -113,7 +108,7 @@ void readVisData(FILE* pFile, TMapQ3& pMap) {
 	fread(pMap.mVisData.mBuffer, lBufferSize, sizeof(unsigned char), pFile);
 }
 
-bool readMap(const std::string& pFilename, TMapQ3& pMap) {
+bool readMap(const std::string& pFilename, QMapQ3& pMap) {
 	// Yeah... this is a mad vulnerability here lol. Will fix, as well as the other stuff.
 	FILE* lFile = fopen(pFilename.c_str(), "r+b");
 
@@ -148,7 +143,7 @@ bool readMap(const std::string& pFilename, TMapQ3& pMap) {
 	return true;
 };
 
-void freeMap(TMapQ3& pMap) {
+void freeMap(QMapQ3& pMap) {
 	if (pMap.mEntity.mBuffer) {
 		delete[] pMap.mEntity.mBuffer;
 		pMap.mEntity.mBuffer = NULL;
@@ -176,7 +171,7 @@ void freeMap(TMapQ3& pMap) {
 	pMap.mLightVols.clear();
 }
 
-void debugInfo(FILE* pFile, const TMapQ3& pMap) {
+void debugInfo(FILE* pFile, const QMapQ3& pMap) {
 	// Super dodgy debug with super bad fprintf. I'll create proper debug stuff later that isn't garbage
 	if (!pFile) {
 		std::cout << "debugInfo :: Invalid stream handle" << std::endl;

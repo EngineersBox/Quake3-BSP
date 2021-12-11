@@ -8,41 +8,41 @@
 #include <string>
 #pragma pack(pop, QLOADER_H)
 
-struct TLump {
+struct QLump {
 	int	mOffset; // Offset to start of lump, relative to beginning of file.  
 	int	mLength; // Length of lump. Always a multiple of 4.  
 };
 
-struct THeader {
+struct QHeader {
 	char mMagicNumber[4]; // Magic number. Always "IBSP".  
 	int	mVersion; // Version number 0x2e for the BSP files distributed with Quake 3.  
-	TLump mLumps[17]; // Lump directory, seventeen entries.
+	QLump mLumps[17]; // Lump directory, seventeen entries.
 };
 
-struct TEntity {
+struct QEntity {
 	int	mSize; // Size of the description.
 	char* mBuffer; // Entity descriptions, stored as a string. 
 };
 
-struct TTexture {
+struct QTexture {
 	char mName[64];
 	int	mFlags;	// Surface flags.  
 	int	mContents; // Content flags.  
 };
 
-struct TPlane {
+struct QPlane {
 	float mNormal[3];
 	float mDistance; // Distance from origin to plane along normal.  
 };
 
-struct TNode {
+struct QNode {
 	int	mPlane;	// Plane index.  
 	int	mChildren[2]; // Children indices. Negative numbers are leaf indices: -(leaf+1).  
 	int	mMins[3]; // Bounding box min coord.  
 	int	mMaxs[3]; // Bounding box max coord.  
 };
 
-struct TLeaf {
+struct QLeaf {
 	int	mCluster; // Visdata cluster index.  
 	int	mArea;	// Areaportal area.  
 	int	mMins[3]; // Bounding box min coord.  
@@ -54,15 +54,15 @@ struct TLeaf {
 
 };
 
-struct TLeafFace{
+struct QLeafFace{
 	int	mFaceIndex;
 };
 
-struct TLeafBrush {
+struct QLeafBrush {
 	int	mBrushIndex;
 };
 
-struct TModel {
+struct QModel {
 	float mMins[3];	// Bounding box min coord.  
 	float mMaxs[3];	// Bounding box max coord.  
 	int	mFace; // First face for model.  
@@ -72,25 +72,25 @@ struct TModel {
 
 };
 
-struct TBrush{
+struct QBrush{
 	int	mBrushSide;
 	int	mNbBrushSides;
 	int	mTextureIndex;
 };
 
-struct TBrushSide {
+struct QBrushSide {
 	int	mPlaneIndex;
 	int	mTextureIndex;
 };
 
-struct TVertex {
+struct QVertex {
 	float mPosition[3];
 	float mTexCoord[2][2]; // Vertex texture coordinates. 0 = Surface, 1 = Lightmap.  
 	float mNormal[3];
 	unsigned char mColor[4];
 
-	TVertex operator+(const TVertex& a) const {
-		TVertex resultado;
+	QVertex operator+(const QVertex& a) const {
+		QVertex resultado;
 		resultado.mPosition[0] += a.mPosition[0];
 		resultado.mPosition[1] += a.mPosition[1];
 		resultado.mPosition[2] += a.mPosition[2];
@@ -103,8 +103,8 @@ struct TVertex {
 		return resultado;
 	}
 
-	TVertex operator*(const float a) const {
-		TVertex resultado;
+	QVertex operator*(const float a) const {
+		QVertex resultado;
 
 		resultado.mPosition[0] *= a;
 		resultado.mPosition[1] *= a;
@@ -129,17 +129,17 @@ struct TVertex {
 	}
 };
 
-struct TMeshVert {
+struct QMeshVert {
 	int	mMeshVert;// Vertex index offset, relative to first vertex of corresponding face.
 };
 
-struct TEffect{
+struct QEffect{
 	char mName[64];	// Effect shader.  
 	int	mBrush;	// Brush that generated this effect.  
 	int	mUnknown; // Always 5, except in q3dm8, which has one effect with -1.  
 };
 
-struct TFace {
+struct QFace {
 	int	mTextureIndex; 
 	int	mEffectIndex; // Index into lump 12 (Effects), or -1.  
 	int	mType; // Face type. 1 = Polygon, 2 = Patch, 3 = Mesh, 4 = Billboard. 
@@ -156,46 +156,46 @@ struct TFace {
 	int	mPatchSize[2];
 };
 
-struct TLightMap {
+struct QLightMap {
 	unsigned char mMapData[128][128][3]; // Lightmap color data. RGB. 
 };
 
 
-struct TLightVol {
+struct QLightVol {
 	unsigned char mAmbient[3]; // Ambient color component. RGB.  
 	unsigned char mDirectional[3]; // Directional color component. RGB.  
 	unsigned char mDir[2]; // Direction to light. 0=phi, 1=theta.  
 };
 
-struct TVisData {
+struct QVisData {
 	int	mNbClusters; // The number of clusters
 	int	mBytesPerCluster; // Bytes (8 bits) in the cluster's bitset
 	unsigned char* mBuffer;	// Array of bytes holding the cluster vis.
 };
 
-struct TMapQ3 {
-	THeader	mHeader;
-	TEntity	mEntity; // Leaves
-	std::vector<TTexture> mTextures;
-	std::vector<TPlane>	mPlanes;
-	std::vector<TNode> mNodes;
-	std::vector<TLeaf> mLeaves;
-	std::vector<TLeafFace> mLeafFaces;
-	std::vector<TLeafBrush>	mLeafBrushes;
-	std::vector<TModel>	mModels;
-	std::vector<TBrush>	mBrushes;
-	std::vector<TBrushSide> mBrushSides;
-	std::vector<TVertex> mVertices;
-	std::vector<TMeshVert> mMeshVertices;
-	std::vector<TEffect> mEffects;
-	std::vector<TFace> mFaces;
-	std::vector<TLightMap> mLightMaps;
-	std::vector<TLightVol> mLightVols;
-	TVisData mVisData;
+struct QMapQ3 {
+	QHeader	mHeader;
+	QEntity	mEntity; // Leaves
+	std::vector<QTexture> mTextures;
+	std::vector<QPlane>	mPlanes;
+	std::vector<QNode> mNodes;
+	std::vector<QLeaf> mLeaves;
+	std::vector<QLeafFace> mLeafFaces;
+	std::vector<QLeafBrush>	mLeafBrushes;
+	std::vector<QModel>	mModels;
+	std::vector<QBrush>	mBrushes;
+	std::vector<QBrushSide> mBrushSides;
+	std::vector<QVertex> mVertices;
+	std::vector<QMeshVert> mMeshVertices;
+	std::vector<QEffect> mEffects;
+	std::vector<QFace> mFaces;
+	std::vector<QLightMap> mLightMaps;
+	std::vector<QLightVol> mLightVols;
+	QVisData mVisData;
 };
 
 /**
- * Constant for the ID Software Magic number.
+ * Id Software Magic number.
  */
 const std::string cMagicNumber = "IBSP";
 const int cVersion = 0x2E; // Quake 3 map version
@@ -218,9 +218,9 @@ const int cLightMapLump = 0x0E; // LightMaps  Packed lightmap data.
 const int cLightVolLump = 0x0F; // LightVols  Local illumination data.  
 const int cVisDataLump = 0x10; // Visdata  Cluster-cluster visibility data.
 
-void debugInfo(FILE* pFile, const TMapQ3& pMap);
-bool readMap(const std::string& pFilename, TMapQ3& pMap);
-void freeMap(TMapQ3& pMap);
-bool isValid(const TMapQ3& pMap);
+void debugInfo(FILE* pFile, const QMapQ3& pMap);
+bool readMap(const std::string& pFilename, QMapQ3& pMap);
+void freeMap(QMapQ3& pMap);
+bool isValid(const QMapQ3& pMap);
 
 #endif // QHEADER_H
