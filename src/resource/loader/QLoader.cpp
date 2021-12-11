@@ -172,6 +172,7 @@ void freeMap(QMapQ3& pMap) {
 }
 
 void debugInfo(FILE* pFile, const QMapQ3& pMap) {
+	// Originally from alexkid77/3dEngineOpenGL
 	// Super dodgy debug with super bad fprintf. I'll create proper debug stuff later that isn't garbage
 	if (!pFile) {
 		std::cout << "debugInfo :: Invalid stream handle" << std::endl;
