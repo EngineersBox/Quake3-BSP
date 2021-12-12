@@ -16,7 +16,6 @@
 class Window {
 protected:
 	SDL_Window* window;
-	SDL_Surface* screen;
 	int flags;
 
 	virtual bool onCreate() { return true; }
@@ -55,7 +54,6 @@ public:
 
 	InputManager *inputManager;
 
-	Window() {};
 	Window(const char *title, bool fullscreen, int width, int height);
 	virtual ~Window();
 

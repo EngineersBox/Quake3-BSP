@@ -7,8 +7,20 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+# Include source content
+file (GLOB_RECURSE Quake_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
+file (GLOB_RECURSE Quake_HEADERS CONFIGURE_DEPENDS "src/*.h")
+
+set (Quake_INCLUDE_DIRS "")
+foreach (_headerFile ${Quake_HEADERS})
+    get_filename_component(_dir ${_headerFile} PATH)
+    list (APPEND Quake_INCLUDE_DIRS ${_dir})
+endforeach()
+list (REMOVE_DUPLICATES Quake_INCLUDE_DIRS)
+
 # Mark executable
-add_executable(Quake src/g_main.cpp "src/resource/loader/QLoader.h" "src/resource/loader/QLoader.cpp" "src/core/window.cpp" "src/core/window.h" )
+add_executable(Quake ${Quake_SOURCES})
+target_include_directories(Quake PRIVATE ${Quake_INCLUDE_DIRS})
 
 # Configure SDL2
 find_package(SDL2 CONFIG REQUIRED)

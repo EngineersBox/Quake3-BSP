@@ -11,7 +11,7 @@ public:
 	bool keyUp(SDL_Scancode key);
 	bool update();
 private:
-	Uint8* keys;
+	const Uint8* keys;
 };
 
 #endif // KEYBOARD_H

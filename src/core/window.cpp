@@ -1,6 +1,4 @@
 #include "window.h"
-#include <cstdlib>
-#include "../input/inputManager.h"
 
 bool lmb = false;
 bool rmb = false;
@@ -12,7 +10,7 @@ void Window::destroy() {
 	stopFullscreen();
 
 	SDL_ShowCursor(SDL_ENABLE);
-	SDL_FreeSurface(screen);
+	SDL_DestroyWindow(this->window);
 
 	SDL_Quit();
 	exit(0);
@@ -24,17 +22,8 @@ void Window::resize() {
 	} else {
 		this->aspect = this->height;
 	}
-
 	glViewport(0, 0, this->width, this->height);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	gluPerspective(54.0f, (float)this->width / (float)this->height, 0.1f, 5000.0f);
-
-	onResize();
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	SDL_SetWindowSize(this->window, this->width, this->height);
 }
 
 float Window::normMousePosX(int _x) {
@@ -54,15 +43,11 @@ int Window::processEvent(SDL_Event _event) {
 		return 0;
 
 	case SDL_WINDOWEVENT_FOCUS_GAINED:
-		if (fullscreen) {
-			startFullscreen(width, height);
-		}
+		startFullscreen(width, height);
 		return 0;
 
 	case SDL_WINDOWEVENT_FOCUS_LOST:
-		if (this->fullscreen) {
-			stopFullscreen();
-		}
+		stopFullscreen();
 		return 0;
 
 	case SDL_WINDOWEVENT_RESIZED:
@@ -145,16 +130,18 @@ int Window::processEvent(SDL_Event _event) {
 
 void Window::startFullscreen(int width, int height) {
 	if (!this->fullscreen) {
-		// TODO: toggle fullscreen here with SDL
-		fullscreen = true;
+		SDL_SetWindowFullscreen(this->window, 0);
+		SDL_ShowCursor(false);
+		this->fullscreen = true;
 	}
 }
 
 
 void Window::stopFullscreen() {
 	if (fullscreen) {
-		// TODO: toggle fullscreen here with SDL
-		fullscreen = false;
+		SDL_SetWindowFullscreen(this->window, SDL_GetWindowFlags(this->window) & SDL_WINDOW_FULLSCREEN);
+		SDL_ShowCursor(true);
+		this->fullscreen = false;
 	}
 }
 
@@ -166,11 +153,9 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		// Sad printf :(
-		fprintf(stderr, "Video initialization failed: %s\n", SDL_GetError());
+		fprintf(stderr, "SDL2 Video initialization failed: %s\n", SDL_GetError());
 		exit(1);
 	}
-
-	flags = SDL_VIDEO_OPENGL | SDL_SWSURFACE | SDL_GL_DOUBLEBUFFER | ((fscreen) ? SDL_WINDOW_FULLSCREEN : SDL_WINDOW_RESIZABLE);
 
 	this->window = SDL_CreateWindow(
 		name,
@@ -185,13 +170,13 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 		exit(1);
 	}
 
-	if (fullscreen) startFullscreen(w, h);
+	startFullscreen(w, h);
 
 	this->mouseSensitivity = 1.0f;
 	this->inputManager = new InputManager(USE_KEYBOARD | USE_MOUSE);
 	this->useInput = true;
 
-	if (useInput) this->inputManager->update();
+	if (this->useInput) this->inputManager->update();
 
 	SDL_ShowCursor(SDL_DISABLE);
 }

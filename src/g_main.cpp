@@ -8,7 +8,7 @@ int main(int, char**) {
 		return 1;
 	}
 
-	std::cout << "SDL successfully initialized" << std::endl;
+	Window* window = new Window("test", false, 640, 480);
 
 	QMapQ3 map;
 	bool status = readMap("E:\\Quake Id Tech 2\\models\\q3dm7.bsp", map);

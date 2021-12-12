@@ -13,7 +13,7 @@
 
 class InputManager {
 public:
-	InputManager(const int inputs);
+	InputManager(int inputs);
 	~InputManager();
 
 	Keyboard* getKeyboard() { return this->keyboard; }
