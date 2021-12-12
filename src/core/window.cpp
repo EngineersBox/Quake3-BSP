@@ -1,4 +1,4 @@
-#include "window.h"
+#include "window.hpp"
 
 bool lmb = false;
 bool rmb = false;

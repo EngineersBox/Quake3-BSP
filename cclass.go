@@ -50,7 +50,7 @@ func writeSourceDefaults(path string, fname string) error {
 
 func main() {
     create(os.Args[1], os.Args[2] + ".cpp")
-    create(os.Args[1], os.Args[2] + ".h")
-    writeHeaderDefaults(os.Args[1] + "/" + os.Args[2] + ".h", os.Args[2])
-    writeSourceDefaults(os.Args[1] + "/" + os.Args[2] + ".cpp", os.Args[2] + ".h")
+    create(os.Args[1], os.Args[2] + ".hpp")
+    writeHeaderDefaults(os.Args[1] + "/" + os.Args[2] + ".hpp", os.Args[2])
+    writeSourceDefaults(os.Args[1] + "/" + os.Args[2] + ".cpp", os.Args[2] + ".hpp")
 }

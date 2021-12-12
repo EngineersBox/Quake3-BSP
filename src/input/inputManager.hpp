@@ -5,8 +5,8 @@
 
 #include <SDL2/SDL.h>
 
-#include "keyboard.h"
-#include "mouse.h"
+#include "keyboard.hpp"
+#include "mouse.hpp"
 
 #define USE_KEYBOARD 0x1
 #define USE_MOUSE 0x2

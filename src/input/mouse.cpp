@@ -1,4 +1,4 @@
-#include "mouse.h"
+#include "mouse.hpp"
 
 inline bool Mouse::checkButtonInRange(int button) {
 	return button >= 0 && button < NUM_MOUSE_BUTTONS;

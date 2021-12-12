@@ -1,4 +1,4 @@
-#include "inputManager.h"
+#include "inputManager.hpp"
 
 InputManager::InputManager(int inputs):
 	keyboard(NULL),

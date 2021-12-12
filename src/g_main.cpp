@@ -1,6 +1,6 @@
-﻿#include "g_main.h"
-#include "resource/loader/QLoader.h"
-#include "core/window.h"
+﻿#include "g_main.hpp"
+#include "resource/loader/QLoader.hpp"
+#include "core/window.hpp"
 
 int main(int, char**) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {

@@ -1,4 +1,4 @@
-#include "keyboard.h"
+#include "keyboard.hpp"
 
 bool Keyboard::keyDown(SDL_Scancode key) {
 	return this->keys[key];

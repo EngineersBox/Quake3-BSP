@@ -38,3 +38,7 @@ find_package(OpenGL REQUIRED)
 target_include_directories(Quake PUBLIC ${OPENGL_INCLUDE_DIR})
 target_include_directories(Quake PUBLIC ${OPENGL_LIBRARIES})
 target_link_libraries(Quake PUBLIC ${OPENGL_LIBRARIES})
+
+# Configure Glm
+find_package(glm CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE glm::glm)

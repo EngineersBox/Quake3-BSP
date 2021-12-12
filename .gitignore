@@ -363,5 +363,7 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Ease of use .cpp/.h file creator
-
 cclass.exe
+
+# CMake generated content
+CMakeFiles/

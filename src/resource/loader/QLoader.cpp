@@ -1,4 +1,4 @@
-#include "QLoader.h"
+#include "QLoader.hpp"
 
 #pragma pack(push, QLOADER_H)
 #include <cstdio>

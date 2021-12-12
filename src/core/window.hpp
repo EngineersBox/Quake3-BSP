@@ -11,7 +11,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 
-#include "../input/inputManager.h"
+#include "../input/inputManager.hpp"
 
 class Window {
 protected:
@@ -54,6 +54,7 @@ public:
 
 	InputManager *inputManager;
 
+	Window() {}
 	Window(const char *title, bool fullscreen, int width, int height);
 	virtual ~Window();
 
