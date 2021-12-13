@@ -1,6 +1,4 @@
 ﻿#include "g_main.hpp"
-#include "resource/loader/QLoader.hpp"
-#include "core/window.hpp"
 
 int main(int, char**) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -8,7 +6,7 @@ int main(int, char**) {
 		return 1;
 	}
 
-	Window* window = new Window("test", false, 640, 480);
+	Engine* engine = new Engine("test", false, 640, 480);
 
 	QMapQ3 map;
 	bool status = readMap("E:\\Quake Id Tech 2\\models\\q3dm7.bsp", map);
@@ -21,6 +19,9 @@ int main(int, char**) {
 	fclose(debugLogFile);
 
 	freeMap(map);
+
+	engine->eventLoop();
+
 	SDL_Quit();
 
 	return 0;

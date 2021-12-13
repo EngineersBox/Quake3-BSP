@@ -165,7 +165,7 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 		h,
 		SDL_WINDOW_OPENGL
 	);
-	if (this->window == NULL) {
+	if (this->window == nullptr) {
 		fprintf(stderr, "Could not create window: %s\n", SDL_GetError());
 		exit(1);
 	}

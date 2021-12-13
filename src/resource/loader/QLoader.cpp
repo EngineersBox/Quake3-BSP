@@ -146,12 +146,12 @@ bool readMap(const std::string& pFilename, QMapQ3& pMap) {
 void freeMap(QMapQ3& pMap) {
 	if (pMap.mEntity.mBuffer) {
 		delete[] pMap.mEntity.mBuffer;
-		pMap.mEntity.mBuffer = NULL;
+		pMap.mEntity.mBuffer = nullptr;
 	}
 
 	if (pMap.mVisData.mBuffer) {
 		delete[] pMap.mVisData.mBuffer;
-		pMap.mVisData.mBuffer = NULL;
+		pMap.mVisData.mBuffer = nullptr;
 	}
 
 	pMap.mTextures.clear();

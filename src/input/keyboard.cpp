@@ -9,6 +9,6 @@ bool Keyboard::keyUp(SDL_Scancode key) {
 }
 
 bool Keyboard::update() {
-	this->keys = SDL_GetKeyboardState(NULL);
+	this->keys = SDL_GetKeyboardState(nullptr);
 	return true;
 }

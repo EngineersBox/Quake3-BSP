@@ -12,7 +12,7 @@
 
 class HighResTimer {
 public:
-	HighResTimer() {}
+	HighResTimer(): startTime(0) {}
 	~HighResTimer() {}
 
 	bool init();
@@ -20,7 +20,7 @@ public:
 	float getFPS(unsigned long elapsedFrames = 1);
 	float lockFPS(unsigned char targetFPS);
 private:
-	Uint32 startTime;
+	Uint32 startTime = 0;
 };
 
 #endif // HIGH_RES_TIMER_H

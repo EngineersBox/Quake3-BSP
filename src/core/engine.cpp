@@ -28,26 +28,26 @@ void Engine::tickInput(float deltaTime) {
 	}
 }
 
-void Engine::gameLoop(float deltaTime) {
+void Engine::cycle(float deltaTime) {
 	Camera* camera = getCamera();
 	//World* world = getWorld();
 
 	if (this->useInput) tickInput(deltaTime);
 
-	onPrepare();
-	//world->prepare();
+	onInit();
+	//world->init();
 	//camera->animate(deltaTime);
 	//world->animate(deltaTime);
 	//world->draw(camera);
 	swapBuffers();
 }
 
-int Engine::startLoop() {
+int Engine::eventLoop() {
 	SDL_Event _event;
-	if (!this->timer) this->timer = new HighResTimer;
+	if (!this->timer) this->timer = new HighResTimer();
 	this->timer->init();
 	for (;;) {
-		gameLoop(this->timer->getElapsedSeconds(1));
+		cycle(this->timer->getElapsedSeconds(1));
 		while (SDL_PollEvent(&_event)) {
 			this->processEvent(_event);
 		}

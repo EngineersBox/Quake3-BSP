@@ -1,11 +1,11 @@
 #include "inputManager.hpp"
 
 InputManager::InputManager(int inputs):
-	keyboard(NULL),
-	mouse(NULL)
+	keyboard(nullptr),
+	mouse(nullptr)
 {
-	if (inputs & USE_KEYBOARD) this->keyboard = new Keyboard;
-	if (inputs & USE_MOUSE) this->mouse = new Mouse;
+	if (inputs & USE_KEYBOARD) this->keyboard = new Keyboard();
+	if (inputs & USE_MOUSE) this->mouse = new Mouse();
 }
 
 InputManager::~InputManager() {

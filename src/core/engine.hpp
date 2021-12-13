@@ -11,18 +11,19 @@ class Engine : public Window {
 protected:
 	HighResTimer* timer;
 
-	virtual void gameLoop(float deltaTime);
-	virtual void onPrepare() {}
-	virtual Camera* getCamera() { return NULL;  }
-	//virtual World* getWorld() { return NULL;  }
+	virtual void cycle(float deltaTime);
+	virtual void onInit() {}
+	virtual Camera* getCamera() { return nullptr;  }
+	//virtual World* getWorld() { return nullptr;  }
 	virtual void tickInput(float deltaTime);
 	void swapBuffers() { SDL_GL_SwapWindow(this->window); }
 public:
-	Engine() {}
+	Engine(): timer(new HighResTimer) {}
 	Engine(const char* name, bool fscreen, int width, int height) :
-		Window(name, fscreen, width, height) {}
+		Window(name, fscreen, width, height),
+		timer(new HighResTimer) {}
 	~Engine() {}
-	int startLoop();
+	int eventLoop();
 };
 
 #endif // ENGINE_H

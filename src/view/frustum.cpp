@@ -20,7 +20,7 @@ enum PlaneData{
 };
 
 void normalizePlane(float frustum[6][4], int side) {
-    float magnitude = 1.f / (float)sqrt(
+    float magnitude = 1.0f / (float)sqrt(
         frustum[side][A] * frustum[side][A]
         + frustum[side][B] * frustum[side][B]
         + frustum[side][C] * frustum[side][C]
