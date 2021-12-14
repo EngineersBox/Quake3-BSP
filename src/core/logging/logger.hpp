@@ -41,8 +41,7 @@ namespace QuakeLogger {
 			std::shared_ptr<spdlog::logger> combinedLogger = std::make_shared<spdlog::logger>("logger", begin(sinks), end(sinks));
 			spdlog::set_default_logger(combinedLogger);
 			combinedLogger->set_level(spdlog::level::trace);
-		}
-		catch (const spdlog::spdlog_ex& ex) {
+		} catch (const spdlog::spdlog_ex& ex) {
 			std::cout << "Logger init failed: " << ex.what() << std::endl;
 			exit(1);
 		}
