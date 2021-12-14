@@ -34,11 +34,15 @@ void Engine::cycle(float deltaTime) {
 
 	if (this->useInput) tickInput(deltaTime);
 
+	glClearColor(0.0f, 0.0f, 0.0f, 1.f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
 	onInit();
 	//world->init();
 	//camera->animate(deltaTime);
 	//world->animate(deltaTime);
 	//world->draw(camera);
+
 	swapBuffers();
 }
 

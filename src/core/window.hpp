@@ -16,6 +16,7 @@
 class Window {
 protected:
 	SDL_Window* window;
+	SDL_GLContext glContext;
 	int flags;
 
 	virtual bool onCreate() { return true; }

@@ -131,7 +131,7 @@ int Window::processEvent(SDL_Event _event) {
 void Window::startFullscreen(int width, int height) {
 	if (!this->fullscreen) {
 		SDL_SetWindowFullscreen(this->window, 0);
-		SDL_ShowCursor(false);
+		SDL_ShowCursor(SDL_DISABLE);
 		this->fullscreen = true;
 	}
 }
@@ -140,7 +140,7 @@ void Window::startFullscreen(int width, int height) {
 void Window::stopFullscreen() {
 	if (fullscreen) {
 		SDL_SetWindowFullscreen(this->window, SDL_GetWindowFlags(this->window) & SDL_WINDOW_FULLSCREEN);
-		SDL_ShowCursor(true);
+		SDL_ShowCursor(SDL_ENABLE);
 		this->fullscreen = false;
 	}
 }
@@ -163,10 +163,15 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 		SDL_WINDOWPOS_UNDEFINED,
 		w,
 		h,
-		SDL_WINDOW_OPENGL
+		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
 	);
 	if (this->window == nullptr) {
 		fprintf(stderr, "Could not create window: %s\n", SDL_GetError());
+		exit(1);
+	}
+	this->glContext = SDL_GL_CreateContext(this->window);
+	if (this->glContext == NULL) {
+		fprintf(stderr, "Could not get OpenGL context: %s\n", SDL_GetError());
 		exit(1);
 	}
 
@@ -178,7 +183,7 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 
 	if (this->useInput) this->inputManager->update();
 
-	SDL_ShowCursor(SDL_DISABLE);
+	SDL_ShowCursor(SDL_ENABLE);
 }
 
 Window::~Window() {
