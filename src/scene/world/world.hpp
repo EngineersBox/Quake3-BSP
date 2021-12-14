@@ -8,6 +8,7 @@
 
 #include "../../view/camera.hpp"
 #include "../../core/timing/highResTimer.hpp"
+#include "../element/entity/entity.hpp"
 
 class World {
 protected:
@@ -19,7 +20,7 @@ public:
 	Camera* camera;
 	// AudioSystem* audioSystem;
 	// std::map<std::string, Audio*> tracks;
-	// std::map<std::string, Entity*> entities;
+	std::map<std::string, Entity*> entities;
 	// Level* level;
 
 	World();

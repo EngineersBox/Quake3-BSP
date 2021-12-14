@@ -6,6 +6,7 @@
 #include "window.hpp"
 #include "../view/camera.hpp"
 #include "timing/highResTimer.hpp"
+#include "../scene/world/world.hpp"
 
 class Engine : public Window {
 protected:

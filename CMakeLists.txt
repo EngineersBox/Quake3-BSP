@@ -42,3 +42,7 @@ target_link_libraries(Quake PUBLIC ${OPENGL_LIBRARIES})
 # Configure Glm
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE glm::glm)
+
+#Configure spdlog
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
