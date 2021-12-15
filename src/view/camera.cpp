@@ -2,8 +2,8 @@
 
 Camera::Camera() {
 	this->position = glm::vec3(0.0, 0.0, 0.0);
-	this->lookAt = glm::vec3(0.0, 0.0, 1.0);
-	this->forward = this->lookAt;
+	this->lookAtV = glm::vec3(0.0, 0.0, 1.0);
+	this->forward = this->lookAtV;
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);
 	this->velocity = glm::vec3(0.0, 0.0, 0.0);
@@ -14,8 +14,8 @@ Camera::Camera() {
 
 Camera::Camera(glm::vec3* look) {
 	this->position = glm::vec3(0.0, 0.0, 0.0);
-	this->lookAt = glm::vec3(*look);
-	this->forward = this->lookAt;
+	this->lookAtV = glm::vec3(*look);
+	this->forward = this->lookAtV;
 	this->up = glm::vec3(0.0, 0.0, 0.0);
 	this->right = glm::cross(this->forward, this->up);
 	this->velocity = glm::vec3(0.0, 0.0, 0.0);
@@ -26,8 +26,8 @@ Camera::Camera(glm::vec3* look) {
 
 Camera::Camera(glm::vec3* pos, glm::vec3* look) {
 	this->position = *pos;
-	this->lookAt = glm::vec3(*look);
-	this->forward = this->lookAt;
+	this->lookAtV = glm::vec3(*look);
+	this->forward = this->lookAtV;
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);
 	this->velocity = glm::vec3(0.0, 0.0, 0.0);
@@ -40,9 +40,9 @@ Camera::~Camera() {}
 
 void Camera::updateLookAt() {
 	glm::vec3 look = glm::vec3(
-		this->finalLookAt.x - this->lookAt.x,
-		this->finalLookAt.y - this->lookAt.y,
-		this->finalLookAt.z - this->lookAt.z
+		this->finalLookAt.x - this->lookAtV.x,
+		this->finalLookAt.y - this->lookAtV.y,
+		this->finalLookAt.z - this->lookAtV.z
 	);
 	this->lookAtVelocity = look * 0.5f;
 }
@@ -83,7 +83,9 @@ void Camera::rotatePoll(float rad) {
 	this->forward.y = cosine * this->forward.length();
 }
 
-//void Camera::lookAtNow(Element* element) {}
+void Camera::lookAtNow(glm::vec3 newPosition) {
+	this->lookAtV = newPosition;
+}
 
 void Camera::moveToNow(float x, float y, float z) {
 	this->position.x = x;
@@ -91,11 +93,23 @@ void Camera::moveToNow(float x, float y, float z) {
 	this->position.z = z;
 }
 
-//void Camera::moveToNow(Element* element) {}
+void Camera::moveToNow(glm::vec3 newPosition) {
+	this->position = newPosition;
+}
 
-//void Camera::lookAt(Element* element) {}
+void Camera::lookAt(glm::vec3 newPosition) {
+	this->initLookAt = this->lookAtV;
+	this->finalLookAt = newPosition;
+	this->lookAtAccel = -this->lookAtV * 0.25f;
+	updateLookAt();
+}
 
-//void Camera::moveTo(Element* element) {}
+void Camera::moveTo(glm::vec3 newPosition) {
+	this->initPosition = this->position;
+	this->finalPosition = newPosition;
+	this->acceleration = this->position * 0.25f;
+	updateMoveTo();
+}
 
 void Camera::animate(float deltaTime) {
 	this->prevPosition = this->position;
@@ -126,17 +140,17 @@ void Camera::animate(float deltaTime) {
 
 	this->position.y += sinPitch * speed;
 
-	this->lookAt.x = (float)(position.x + cosYaw);
-	this->lookAt.y = (float)(position.y + sinPitch);
-	this->lookAt.z = (float)(position.z + sinYaw);
+	this->lookAtV.x = (float)(position.x + cosYaw);
+	this->lookAtV.y = (float)(position.y + sinPitch);
+	this->lookAtV.z = (float)(position.z + sinYaw);
 
 	gluLookAt(
 		this->position.x,
 		this->position.y,
 		this->position.z,
-		this->lookAt.x,
-		this->lookAt.y,
-		this->lookAt.z,
+		this->lookAtV.x,
+		this->lookAtV.y,
+		this->lookAtV.z,
 		0.0,
 		1.0,
 		0.0

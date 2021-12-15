@@ -21,6 +21,7 @@ private:
 	glm::vec3 initLookAt;
 	glm::vec3 finalLookAt;
 	glm::vec3 lookAtVelocity;
+	glm::vec3 lookAtAccel;
 	void updateLookAt();
 	void updateMoveTo();
 public:
@@ -28,18 +29,18 @@ public:
 	glm::vec3 prevPosition;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
-	glm::vec3 lookAt;
+	glm::vec3 lookAtV;
 	glm::vec3 up;
 	glm::vec3 forward;
 	glm::vec3 right;
 
-	float yaw;
-	float pitch;
+	float yaw = 0;
+	float pitch = 0;
 
-	int screenWidth;
-	int screenHeight;
-	int centreX;
-	int centreY;
+	int screenWidth = 0;
+	int screenHeight = 0;
+	int centreX = 0;
+	int centreY = 0;
 
 	Camera();
 	Camera(int width, int height) {}
@@ -47,10 +48,10 @@ public:
 	Camera(glm::vec3* pos, glm::vec3* look);
 	~Camera();
 
-	//void lookAt(Element* element);
-	//void lookAtNow(Element* element);
-	//void moveTo(Element* element);
-	//void moveToNow(Element* element);
+	void lookAt(glm::vec3 newPosition);
+	void lookAtNow(glm::vec3 newPosition);
+	void moveTo(glm::vec3 newPosition);
+	void moveToNow(glm::vec3 newPosition);
 	void moveToNow(float x, float y, float z);
 	void rotateYaw(float rad);
 	void rotatePitch(float rad);

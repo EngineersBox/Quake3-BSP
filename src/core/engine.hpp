@@ -15,11 +15,12 @@ protected:
 	virtual void cycle(float deltaTime);
 	virtual void onInit() {}
 	virtual Camera* getCamera() { return nullptr;  }
-	//virtual World* getWorld() { return nullptr;  }
+	virtual World* getWorld() { return nullptr;  }
 	virtual void tickInput(float deltaTime);
 	void swapBuffers() { SDL_GL_SwapWindow(this->window); }
 public:
-	Engine(): timer(new HighResTimer) {}
+	Engine(): timer(new HighResTimer) {
+	}
 	Engine(const char* name, bool fscreen, int width, int height) :
 		Window(name, fscreen, width, height),
 		timer(new HighResTimer) {}

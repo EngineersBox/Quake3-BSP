@@ -30,7 +30,7 @@ void Engine::tickInput(float deltaTime) {
 
 void Engine::cycle(float deltaTime) {
 	Camera* camera = getCamera();
-	//World* world = getWorld();
+	World* world = getWorld();
 
 	if (this->useInput) tickInput(deltaTime);
 
@@ -38,10 +38,16 @@ void Engine::cycle(float deltaTime) {
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	onInit();
-	//world->init();
-	//camera->animate(deltaTime);
-	//world->animate(deltaTime);
-	//world->draw(camera);
+	if (world != nullptr) {
+		//world->init();
+	}
+	if (camera != nullptr) {
+		camera->animate(deltaTime);
+	}
+	if (world != nullptr) {
+		//world->animate(deltaTime);
+		//world->draw(camera);
+	}
 
 	swapBuffers();
 }
