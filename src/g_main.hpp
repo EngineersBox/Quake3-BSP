@@ -6,5 +6,5 @@
 #include <spdlog/spdlog.h>
 
 #include "resource/loader/QLoader.hpp"
-#include "core/engine.hpp"
+#include "g_engine.hpp"
 #include "core/logging/logger.hpp"

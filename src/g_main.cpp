@@ -11,7 +11,7 @@ int main(int, char**) {
 	}
 	spdlog::info("SDl2 initialised");
 
-	Engine* engine = new Engine("test", false, WIDTH, HEIGHT);
+	GEngine* engine = new GEngine("test", false, WIDTH, HEIGHT);
 	spdlog::info("Engine instantiated with {0}x{1} window", WIDTH, HEIGHT);
 
 	std::string mapName = "q3dm7.bsp";
