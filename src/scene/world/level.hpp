@@ -3,8 +3,10 @@
 #ifndef LEVEL_H
 #define LEVEL_H
 
-class Level {
+#include "../../resource/loader/QLoader.hpp"
 
+class Level {
+	QMapQ3 map;
 };
 
 #endif // LEVEL_H
