@@ -5,7 +5,16 @@
 
 #include <glm/glm.hpp>
 
+#include "../resource/loader/QLoader.hpp"
+
 class CollisionHandler {
+private:
+	int traceType;
+	float sphereRadius;
+	glm::vec3 boxMin;
+	glm::vec3 boxMax;
+	void checkNode(int nodeIndex, float fractionInitial, float fractionFinal, glm::vec3 pinical, glm::vec3 pFinal);
+	void checkBrush(QBrush* brush, glm::vec3 vOrigin, glm::vec3 vFinal);
 public:
 	bool collision;
 	float outputFraction;

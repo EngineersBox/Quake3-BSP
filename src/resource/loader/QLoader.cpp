@@ -3,6 +3,7 @@
 #pragma pack(push, QLOADER_H)
 #include <cstdio>
 #include <iostream>
+#include <spdlog/spdlog.h>
 #pragma pack(pop, QLOADER_H)
 
 bool isValid(const QMapQ3& pMap) {
@@ -113,12 +114,12 @@ bool readMap(const std::string& pFilename, QMapQ3& pMap) {
 	FILE* lFile = fopen(pFilename.c_str(), "r+b");
 
 	if (!lFile) {
-		std::cout << "readMap :: Invalid stream handle" << std::endl;
+		spdlog::error("Could not read map: Invalid stream handle");
 		return false;
 	}
 
-	if (readHeader(lFile, pMap) == false) {
-		std::cout << "readMap :: Invalid Q3 map header" << std::endl;
+	if (!readHeader(lFile, pMap)) {
+		spdlog::error("Could not read map: Invalid Quake3 map header");
 		return false;
 	}
 
@@ -175,12 +176,12 @@ void debugInfo(FILE* pFile, const QMapQ3& pMap) {
 	// Originally from alexkid77/3dEngineOpenGL
 	// Super dodgy debug with super bad fprintf. I'll create proper debug stuff later that isn't garbage
 	if (!pFile) {
-		std::cout << "debugInfo :: Invalid stream handle" << std::endl;
+		spdlog::error("Could not read map: Invalid stream handle");
 		return;
 	}
 
 	if (!isValid(pMap)) {
-		std::cout << "debugInfo :: Invalid Q3 map header" << std::endl;
+		spdlog::error("Could not read map: Invalid Quake3 map header");
 		return;
 	}
 

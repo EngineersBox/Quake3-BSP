@@ -10,6 +10,7 @@ int main(int, char**) {
 		return 1;
 	}
 	spdlog::info("SDl2 initialised");
+	spdlog::info("Uint8 size: {0}", sizeof(Uint8));
 
 	GEngine* engine = new GEngine("test", false, WIDTH, HEIGHT);
 	spdlog::info("Engine instantiated with {0}x{1} window", WIDTH, HEIGHT);
