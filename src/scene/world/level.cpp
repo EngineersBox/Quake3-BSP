@@ -21,42 +21,42 @@ Level::~Level() {
 }
 
 void Level::convertEdges() {
-	float x;
+	float fTemp;
 
 	for (unsigned int i = 0; i < this->map.mVertices.size(); i++) {
-		x = this->map.mVertices[i].mPosition[1];
+		fTemp = this->map.mVertices[i].mPosition[1];
 		this->map.mVertices[i].mPosition[1] = this->map.mVertices[i].mPosition[2];
-		this->map.mVertices[i].mPosition[2] = -x;
+		this->map.mVertices[i].mPosition[2] = -fTemp;
 
-		x = this->map.mVertices[i].mNormal[1];
+		fTemp = this->map.mVertices[i].mNormal[1];
 		this->map.mVertices[i].mNormal[1] = this->map.mVertices[i].mNormal[2];
-		this->map.mVertices[i].mNormal[2] = -x;
+		this->map.mVertices[i].mNormal[2] = -fTemp;
 
-		x = this->map.mVertices[i].mTexCoord[1][0];
+		fTemp = this->map.mVertices[i].mTexCoord[1][0];
 		this->map.mVertices[i].mTexCoord[1][0] = this->map.mVertices[i].mTexCoord[1][1];
-		this->map.mVertices[i].mTexCoord[1][1] = x;
+		this->map.mVertices[i].mTexCoord[1][1] = fTemp;
 	}
 
 	for (unsigned int i = 0; i < this->map.mPlanes.size(); i++) {
-		x = this->map.mPlanes[i].mNormal[1];
+		fTemp = this->map.mPlanes[i].mNormal[1];
 		this->map.mPlanes[i].mNormal[1] = this->map.mPlanes[i].mNormal[2];
-		this->map.mPlanes[i].mNormal[2] = -x;
+		this->map.mPlanes[i].mNormal[2] = -fTemp;
 	}
 
 	for (unsigned int i = 0; i < this->map.mFaces.size(); i++) {
-		x = this->map.mFaces[i].mNormal[1];
+		fTemp = this->map.mFaces[i].mNormal[1];
 		this->map.mFaces[i].mNormal[1] = this->map.mFaces[i].mNormal[2];
-		this->map.mFaces[i].mNormal[2] = -x;
+		this->map.mFaces[i].mNormal[2] = -fTemp;
 	}
 
-	int c;
+	int iTemp;
 	for (unsigned int i = 0; i < this->map.mLeaves.size(); i++) {
-		c = this->map.mLeaves[i].mMins[1];
+		iTemp = this->map.mLeaves[i].mMins[1];
 		this->map.mLeaves[i].mMins[1] = this->map.mLeaves[i].mMins[2];
-		this->map.mLeaves[i].mMins[2] = -c;
-		c = this->map.mLeaves[i].mMaxs[1];
+		this->map.mLeaves[i].mMins[2] = -iTemp;
+		iTemp = this->map.mLeaves[i].mMaxs[1];
 		this->map.mLeaves[i].mMaxs[1] = this->map.mLeaves[i].mMaxs[2];
-		this->map.mLeaves[i].mMaxs[2] = -c;
+		this->map.mLeaves[i].mMaxs[2] = -iTemp;
 	}
 }
 
