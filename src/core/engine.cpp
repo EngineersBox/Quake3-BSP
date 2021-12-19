@@ -39,14 +39,14 @@ void Engine::cycle(float deltaTime) {
 
 	onInit();
 	if (world != nullptr) {
-		//world->init();
+		world->init();
 	}
 	if (camera != nullptr) {
 		camera->animate(deltaTime);
 	}
 	if (world != nullptr) {
 		//world->animate(deltaTime);
-		//world->draw(camera);
+		world->draw(camera);
 	}
 
 	swapBuffers();

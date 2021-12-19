@@ -23,7 +23,7 @@ namespace QuakeLogger {
 	};
 
 	std::string getLogFileName() {
-		return "logs/quake_log_" + getCurrentTime("%d-%m-%Y_%H-%M-%S") + ".log";
+		return "logs/quake_log_" + getCurrentTime("%Y-%m-%d_%H-%M-%S") + ".log";
 	}
 
 	void initLogger() {
@@ -45,7 +45,7 @@ namespace QuakeLogger {
 			std::cout << "Logger init failed: " << ex.what() << std::endl;
 			exit(1);
 		}
-		spdlog::set_pattern("[%D %H:%M:%S %z] [%n] [%^%l%$] [thread %t] %v");
+		spdlog::set_pattern("[%Y/%m/%d %H:%M:%S] [%n] [%^%l%$] [thread %t] :: %v");
 	}
 }
 

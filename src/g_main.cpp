@@ -3,6 +3,8 @@
 constexpr int WIDTH = 640;
 constexpr int HEIGHT = 480;
 
+#define PROJECT_SOURCE "/Users/jackkilrain/Desktop/Projects/C:C++/Quake-Id-Tech-2/"
+
 int main(int, char**) {
 	QuakeLogger::initLogger();
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -12,19 +14,19 @@ int main(int, char**) {
 	spdlog::info("SDl2 initialised");
 	spdlog::info("Uint8 size: {0}", sizeof(Uint8));
 
-	GEngine* engine = new GEngine("test", false, WIDTH, HEIGHT);
+    GEngine* engine = new GEngine("test", false, WIDTH, HEIGHT);
 	spdlog::info("Engine instantiated with {0}x{1} window", WIDTH, HEIGHT);
 
-	std::string mapName = "q3dm7.bsp";
+	const std::string mapName = "q3dm7.bsp";
 
 	QMapQ3 map;
-	bool status = readMap("E:\\Quake Id Tech 2\\models\\" + mapName, map);
+	bool status = readMap(fmt::format("{0}models/{1}", PROJECT_SOURCE, mapName), map);
 	if (!status) {
 		return 1;
 	}
 	spdlog::debug("Imported {0} map", mapName);
 
-	FILE* debugLogFile = fopen("debugLog.txt", "w");
+    FILE* debugLogFile = fopen("debugLog.txt", "w");
 	debugInfo(debugLogFile, map);
 	fclose(debugLogFile);
 

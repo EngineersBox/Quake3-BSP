@@ -5,11 +5,14 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #include <Windows.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#else
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
 #endif
 
 #include <string>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <vector>
 #include <spdlog/spdlog.h>
 
@@ -19,20 +22,21 @@
 #include "../../view/frustum.hpp"
 #include "../element/element.hpp"
 
-class Level {
+class Level : public Element {
 private:
 	QMapQ3 map;
 	std::vector<Texture> lightmaps;
 	std::vector<Texture> albedos;
 
 	void convertEdges();
+    void bindLightmapAndTexture(int faceIndex);
 	void drawTriangle(int faceIndex);
 	void drawTriangleVA(int faceIndex);
 	void drawTriangleMesh(int faceIndex);
 
 	// BSP Related
-	int findLeaf(const glm::vec3& camperaPos);
-	bool clusterVisible(int actual, int leaf);
+	int findLeaf(const glm::vec3& cameraPos);
+	bool clusterVisible(int actual, int leafCluster);
 	void generateLightmaps();
 	void generateAlbedos();
 
@@ -48,9 +52,6 @@ protected:
 	void onDraw(Camera* camera);
 	void onCollision(Element* element);
 public:
-	// glActiveTextureARB -> glActiveTexture
-	// glClientActiveTextureARB -> glClientActiveTexture
-
 	int triangles;
 	Frustum frustum;
 
@@ -61,7 +62,6 @@ public:
 	glm::vec3 trace(glm::vec3 start, glm::vec3 end);
 	glm::vec3 traceRay(glm::vec3 start, glm::vec3 end);
 	glm::vec3 traceSphere(glm::vec3 start, glm::vec3 end, float radius);
-	glm::vec3 traceBox(glm::vec3 start, glm::vec3 end, glm::vec3 min, glm::vec3 max);
 
 	Level(const char* mapFilePath);
 	~Level();

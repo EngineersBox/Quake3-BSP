@@ -5,11 +5,14 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #include <Windows.h>
+#include <gl/GL.h>
+#include <gl/GLU.h>
+#else
+#include <OpenGl/gl.h>
+#include <OpenGL/glu.h>
 #endif
 
 #include<SDL2/SDL.h>
-#include <gl/GL.h>
-#include <gl/GLU.h>
 
 #include "../input/inputManager.hpp"
 
