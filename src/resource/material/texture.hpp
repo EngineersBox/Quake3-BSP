@@ -34,6 +34,7 @@ public:
 
 	static Uint32 getPixel(SDL_Surface* surface, int x, int y);
 	void load(const char* filename);
+    void loadNotFound();
 	void unload();
 };
 

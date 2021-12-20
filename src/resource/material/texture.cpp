@@ -7,7 +7,7 @@
 void Texture::load(const char* filename) {
 	this->image = IMG_Load(filename);
 	if (!this->image) {
-		spdlog::error("Could not laod image: {0}", SDL_GetError());
+		spdlog::error("Could not load image: {0}", SDL_GetError());
 		return;
 	}
 
@@ -38,6 +38,71 @@ void Texture::load(const char* filename) {
 			pos += bytesPerPixel;
 		}
 	}
+}
+
+void Texture::loadNotFound() {
+    this->width = 128;
+    this->height = 128;
+    this->bitDepth = RGBA_BIT_DEPTH;
+
+    int bytesPerPixel = this->bitDepth / PIXEL_BYTE_SIZE;
+    Uint32 rmask, gmask, bmask, amask;
+
+    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
+    #else
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
+    #endif
+
+    this->image = SDL_CreateRGBSurface(
+        0,
+        this->width,
+        this->height,
+        this->bitDepth,
+        rmask,
+        gmask,
+        bmask,
+        amask
+    );
+    if (this->image == nullptr) {
+        spdlog::error("Could not create RGB surface: {0}", SDL_GetError());
+        return;
+    }
+    Uint32 pink = SDL_MapRGB(this->image->format, 255, 0, 255);
+    SDL_Rect rect{
+        .x = 0,
+        .y = 0,
+        .w = this->width / 2,
+        .h = this->height / 2
+    };
+    this->data = new GLubyte[this->width * this->height * bytesPerPixel];
+    SDL_FillRect(this->image, &rect, pink);
+    rect = {
+        .x = this->width / 2,
+        .y = this->height / 2,
+        .w = this->width,
+        .h = this->height
+    };
+    SDL_FillRect(this->image, &rect, pink);
+    int pos = 0;
+    for (int y = 0; y < this->height; y++) {
+        for (int x = 0; x < this->width; x++) {
+            Uint8 r, g, b, a;
+            Uint32 pixel = Texture::getPixel(this->image, x, y);
+            SDL_GetRGBA(pixel, this->image->format, &r, &g, &b, &a);
+            this->data[pos] = r;
+            this->data[pos+ 1] = g;
+            this->data[pos + 2] = b;
+            this->data[pos + 3] = a;
+            pos += bytesPerPixel;
+        }
+    }
 }
 
 void Texture::unload() {

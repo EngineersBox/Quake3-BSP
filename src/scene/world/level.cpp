@@ -10,6 +10,7 @@ Level::Level(const char* mapFilePath) {
 		convertEdges();
 		generateLightmaps();
 		generateAlbedos();
+        spdlog::info("Init lightmaps and textures");
 	} else {
 		spdlog::error("Could not load map {0}", mapFilePath);
 	}
@@ -223,7 +224,7 @@ void Level::generateLightmaps() {
 }
 
 void Level::generateAlbedos() {
-    std::string temp,temp2,temp3;
+    std::string fileName,tgaFileName,jpgFileName;
     char *route;
 
     int c;
@@ -233,32 +234,41 @@ void Level::generateAlbedos() {
 
         while (this->map.mTextures[i].mName[c] != 0){
             if (this->map.mTextures[i].mName[c]=='/') {
-                temp.push_back('/');
-                temp.push_back('/');
+                fileName.push_back('/');
+                fileName.push_back('/');
             } else {
-                temp.push_back(this->map.mTextures[i].mName[c]);
+                fileName.push_back(this->map.mTextures[i].mName[c]);
             }
             c++;
         }
-        temp2 = temp + ".tga";
-        temp3 = temp + ".jpg";
+        tgaFileName = fileName + ".tga";
+        jpgFileName = fileName + ".jpg";
 
 
-        if (fopen(temp2.data(),"r")) {
-            route = new char[temp2.size() + 1];
-            strcpy(route, temp2.c_str());
+        bool opened = false;
+        if (fopen(tgaFileName.data(), "r")) {
+            spdlog::info("Loading texture: {}", tgaFileName);
+            route = new char[tgaFileName.size() + 1];
+            strcpy(route, tgaFileName.c_str());
             this->albedos[i].load(route);
             delete[] route;
+            opened = true;
         }
-        if (fopen(temp3.data(),"r")) {
-            route = new char[temp3.size() + 1];
-            strcpy(route, temp3.c_str());
+        if (fopen(jpgFileName.data(), "r")) {
+            spdlog::info("Loading texture: {}", jpgFileName);
+            route = new char[jpgFileName.size() + 1];
+            strcpy(route, jpgFileName.c_str());
             this->albedos[i].load(route);
             delete[] route;
-
+            opened = true;
         }
-
-        temp.clear();
+        if (!opened) {
+            spdlog::warn("Could not find \"{0}\" in either .tga or .jpg format, defaulting to NOT_FOUND texture", fileName);
+            fileName.clear();
+//            continue;
+            this->albedos[i].loadNotFound();
+        }
+        fileName.clear();
 
         glGenTextures(1, &this->albedos[i].id);
         glBindTexture(GL_TEXTURE_2D, this->albedos[i].id);
