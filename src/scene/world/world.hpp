@@ -26,14 +26,14 @@ public:
     Level* level;
 
 	World();
-	World(Camera* camera);
+	explicit World(Camera* camera);
 	~World();
 
 	void load();
 	void unload();
-	void animate(float deltaTime);
-	void draw(Camera* camera);
-	void init();
+	void animate(float deltaTime) const;
+	void draw(Camera* _camera) const;
+	static void init();
 };
 
 #endif // WORLD_H

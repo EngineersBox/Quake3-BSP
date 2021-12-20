@@ -2,7 +2,6 @@
 
 #pragma pack(push, QLOADER_H)
 #include <cstdio>
-#include <iostream>
 #include <spdlog/spdlog.h>
 #pragma pack(pop, QLOADER_H)
 
@@ -142,7 +141,7 @@ bool readMap(const std::string& pFilename, QMapQ3& pMap) {
 	readVisData(lFile, pMap);
 	fclose(lFile);
 	return true;
-};
+}
 
 void freeMap(QMapQ3& pMap) {
 	if (pMap.mEntity.mBuffer) {
@@ -269,11 +268,11 @@ void debugInfo(FILE* pFile, const QMapQ3& pMap) {
 	fprintf(pFile, "\n");
 
 	fprintf(pFile, "********* Brush Lump *********\n");
-	for (int lBrushCounter = 0; lBrushCounter < (int)pMap.mBrushes.size(); ++lBrushCounter) {
+	for (auto mBrushe : pMap.mBrushes) {
 		//	fprintf(pFile, "Brush %d\n", lModelCounter);
-		fprintf(pFile, "\tBrushSide %d\n", pMap.mBrushes[lBrushCounter].mBrushSide);
-		fprintf(pFile, "\tNbBrushSides %d\n", pMap.mBrushes[lBrushCounter].mNbBrushSides);
-		fprintf(pFile, "\tTextureIndex %d\n", pMap.mBrushes[lBrushCounter].mTextureIndex);
+		fprintf(pFile, "\tBrushSide %d\n", mBrushe.mBrushSide);
+		fprintf(pFile, "\tNbBrushSides %d\n", mBrushe.mNbBrushSides);
+		fprintf(pFile, "\tTextureIndex %d\n", mBrushe.mTextureIndex);
 	}
 	fprintf(pFile, "\n");
 

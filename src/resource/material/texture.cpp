@@ -110,9 +110,7 @@ void Texture::unload() {
 	if (this->image) {
 		SDL_FreeSurface(this->image);
 	}
-	if (this->data) {
-		delete this->data;
-	}
+    delete this->data;
 	this->image = nullptr;
 	this->data = nullptr;
 }
@@ -126,11 +124,11 @@ Uint32 Texture::getPixel(SDL_Surface* surface, int x, int y) {
 	case 2:
 		return *(Uint16*)pixel;
 	case 3:
-		if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
-			return pixel[0] << 16 | pixel[1] << 8 | pixel[2];
-		} else {
-			return pixel[0] | pixel[1] << 8 | pixel[2] << 16;
-		}
+        #if SDL_BYTEORDER == SDL_BIG_ENDIAN
+            return pixel[0] << 16 | pixel[1] << 8 | pixel[2];
+        #else
+            return pixel[0] | pixel[1] << 8 | pixel[2] << 16;
+        #endif
 	case 4:
 		return *(Uint32*)pixel;
 	default:

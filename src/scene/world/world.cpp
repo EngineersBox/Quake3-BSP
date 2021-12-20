@@ -1,8 +1,6 @@
 #include "world.hpp"
 
-World::World() {
-
-}
+World::World() = default;
 
 World::World(Camera* camera) {
 	this->camera = camera;
@@ -16,16 +14,16 @@ World::~World() {
 	// Delete stuff
 }
 
-void World::animate(float deltaTime) {
+void World::animate(float deltaTime) const {
     glm::vec3 newPosition = this->level->traceSphere(this->camera->prevPosition, this->camera->position, 15.0f);
     this->camera->position = newPosition;
 }
 
-void World::draw(Camera* camera) {
+void World::draw(Camera* _camera) const {
 	//for (const auto& [_, entity] : this->entities) {
-	//	entity->draw(camera);
+	//	entity->draw(_camera);
 	//}
-    this->level->draw(camera);
+    this->level->draw(_camera);
 }
 
 void World::init() {

@@ -12,7 +12,7 @@ bool Mouse::buttonUp(int button) {
 	return checkButtonInRange(button) && !this->state.buttons[button];
 }
 
-void Mouse::location(int& _x, int& _y) {
+void Mouse::location(int& _x, int& _y) const {
 	_x = this->state.x;
 	_y = this->state.y;
 }

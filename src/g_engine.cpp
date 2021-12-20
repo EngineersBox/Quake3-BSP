@@ -86,17 +86,17 @@ void GEngine::onMouseMove(int x, int y, int centerX, int centerY) {
 	static float yaw = 0.0f;
 	static float pitch = 0.0f;
 
-	float mX = (float)x;
-	float mY = (float)y;
+	auto mX = (float)x;
+	auto mY = (float)y;
 
-	if (mX < centerX / 2)
+	if (mX < centerX / 2.0)
 		this->gameCamera->yaw -= 0.25f * this->mouseSensitivity;
-	else if (mX > centerX / 2)
+	else if (mX > centerX / 2.0)
 		this->gameCamera->yaw += 0.25f * this->mouseSensitivity;
 
-	if (mY < centerY / 2)
+	if (mY < centerY / 2.0)
 		this->gameCamera->pitch += 0.25f * this->mouseSensitivity;
-	else if (mY > centerY / 2)
+	else if (mY > centerY / 2.0)
 		this->gameCamera->pitch -= 0.25f * this->mouseSensitivity;
 
 	oldX = mX;

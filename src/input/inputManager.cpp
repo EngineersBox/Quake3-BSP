@@ -9,8 +9,8 @@ InputManager::InputManager(int inputs):
 }
 
 InputManager::~InputManager() {
-	if (this->keyboard) delete this->keyboard;
-	if (this->mouse) delete this->mouse;
+	delete this->keyboard;
+	delete this->mouse;
 }
 
 bool InputManager::update() {

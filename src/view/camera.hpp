@@ -47,7 +47,7 @@ public:
 
 	Camera();
 	Camera(int width, int height) {}
-	Camera(glm::vec3* look);
+	explicit Camera(glm::vec3* look);
 	Camera(glm::vec3* pos, glm::vec3* look);
 	~Camera();
 

@@ -32,7 +32,7 @@ public:
 	bool isDead;
 
 	Element() { isDead = false; }
-	~Element() {}
+	~Element() override = default;
 
 	virtual void load() {}
 	virtual void unload() {}

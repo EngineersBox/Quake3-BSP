@@ -13,7 +13,7 @@
 class HighResTimer {
 public:
 	HighResTimer(): startTime(0) {}
-	~HighResTimer() {}
+	~HighResTimer() = default;
 
 	bool init();
 	float getElapsedSeconds(unsigned long elapsedFrames = 1);

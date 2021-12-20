@@ -1,11 +1,11 @@
 #include "node.hpp"
 
 bool Node::isFirstChild() {
-	return this->parent ? this->parent->child == this : false;
+	return this->parent != nullptr && this->parent->child == this;
 }
 
 bool Node::isLastChild() {
-	return this->parent ? this->parent->child->prev == this : false;
+	return this->parent != nullptr && this->parent->child->prev == this;
 }
 
 void Node::attachTo(Node* newParent) {
@@ -44,7 +44,7 @@ void Node::detach() {
 	this->next = this;
 }
 
-int Node::countNodes() {
+int Node::countNodes() const {
 	return this->child ? this->child->countNodes() + 1 : 1;
 }
 

@@ -24,10 +24,10 @@ class Mouse {
 public:
 	bool buttonDown(int button);
 	bool buttonUp(int button);
-	void location(int& _x, int& _y);
+	void location(int& _x, int& _y) const;
 	bool update();
 private:
-	inline bool checkButtonInRange(int button);
+	static inline bool checkButtonInRange(int button);
 	MouseState state;
 };
 

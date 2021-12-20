@@ -223,4 +223,4 @@ bool readMap(const std::string& pFilename, QMapQ3& pMap);
 void freeMap(QMapQ3& pMap);
 bool isValid(const QMapQ3& pMap);
 
-#endif // QHEADER_H
+#endif // QLOADER_H

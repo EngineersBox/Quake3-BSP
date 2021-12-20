@@ -10,8 +10,8 @@ public:
 	Node* prev;
 	Node* next;
 
-	bool hasParent() { return this->parent != nullptr; }
-	bool hasChild() { return this->child != nullptr; }
+	[[nodiscard]] bool hasParent() const { return this->parent != nullptr; }
+	[[nodiscard]] bool hasChild() const { return this->child != nullptr; }
 	bool isFirstChild();
 	bool isLastChild();
 
@@ -19,10 +19,10 @@ public:
 	void attach(Node* newChild);
 	void detach();
 
-	int countNodes();
+	[[nodiscard]] int countNodes() const;
 
 	Node();
-	Node(Node* node);
+	explicit Node(Node* node);
 	virtual ~Node();
 };
 

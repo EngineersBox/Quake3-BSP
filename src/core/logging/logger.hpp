@@ -19,8 +19,8 @@ namespace QuakeLogger {
 		std::time(&rawtime);
 		struct tm* timeinfo = std::localtime(&rawtime);
 		std::strftime(date_buffer, sizeof(date_buffer), date_format, timeinfo);
-		return std::string(date_buffer);
-	};
+		return {date_buffer};
+	}
 
 	std::string getLogFileName() {
 		return "logs/quake_log_" + getCurrentTime("%Y-%m-%d_%H-%M-%S") + ".log";

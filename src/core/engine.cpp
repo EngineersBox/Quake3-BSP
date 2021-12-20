@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "engine.hpp"
 
 void Engine::tickInput(float deltaTime) {
@@ -52,7 +50,7 @@ void Engine::cycle(float deltaTime) {
 	swapBuffers();
 }
 
-int Engine::eventLoop() {
+[[noreturn]] int Engine::eventLoop() {
 	SDL_Event _event;
 	if (!this->timer) this->timer = new HighResTimer();
 	this->timer->init();

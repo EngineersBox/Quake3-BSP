@@ -25,8 +25,12 @@ void Element::animate(float deltaTime) {
 	}
 }
 
+inline float vecLength(glm::vec3 vec) {
+    return (float)sqrt((double)(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
+}
+
 void Element::handleCollisions(Element* element) {
-	if (((element->position - this->position).length() <= (element->size + this->size)) && (element != ((Element*)this))) {
+	if ((vecLength(element->position - this->position) <= (element->size + this->size)) && (element != ((Element*)this))) {
 		onCollision(element);
 		if (hasChild()) {
 			((Element*)this->child)->handleCollisions(element);

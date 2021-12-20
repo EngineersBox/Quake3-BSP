@@ -168,8 +168,8 @@ int Level::findLeaf(const glm::vec3 &cameraPos) {
     return - index - 1;
 }
 
-bool Level::clusterVisible(int actual, int leafCluster) {
-    if (!this->map.mVisData.mBuffer || actual < 0) return 1;
+bool Level::clusterVisible(int actual, int leafCluster) const {
+    if (!this->map.mVisData.mBuffer || actual < 0) return true;
     unsigned char visibilitySet = this->map.mVisData.mBuffer[(actual * this->map.mVisData.mBytesPerCluster) + (leafCluster >> 3)];
     return (visibilitySet & (1 << ((leafCluster) & 7))) != 0;
 }
@@ -189,12 +189,12 @@ void Level::generateLightmaps() {
         this->lightmaps[i].width = TEX_WIDTH;
         c = 0;
         for (int y = 0; y < TEX_WIDTH; y++) {
-            for (int x = 0; x < TEX_WIDTH; x++) {
+            for (auto & x : this->map.mLightMaps[i].mMapData) {
                 temp = 0;
                 scale = 1.0f;
-                r = ((float) this->map.mLightMaps[i].mMapData[x][y][0]) * brightness / BRIGHTNESS_SCALAR;
-                g = ((float) this->map.mLightMaps[i].mMapData[x][y][1]) * brightness / BRIGHTNESS_SCALAR;
-                b = ((float) this->map.mLightMaps[i].mMapData[x][y][2]) * brightness / BRIGHTNESS_SCALAR;
+                r = ((float) x[y][0]) * brightness / BRIGHTNESS_SCALAR;
+                g = ((float) x[y][1]) * brightness / BRIGHTNESS_SCALAR;
+                b = ((float) x[y][2]) * brightness / BRIGHTNESS_SCALAR;
                 if (r > 1.0f && (temp = (1.0f / r)) < scale) scale = temp;
                 if (g > 1.0f && (temp = (1.0f / g)) < scale) scale = temp;
                 if (b > 1.0f && (temp = (1.0f / b)) < scale) scale = temp;
@@ -263,9 +263,7 @@ void Level::generateAlbedos() {
             opened = true;
         }
         if (!opened) {
-            spdlog::warn("Could not find \"{0}\" in either .tga or .jpg format, defaulting to NOT_FOUND texture", fileName);
-            fileName.clear();
-//            continue;
+            spdlog::debug("Could not find \"{0}\" in either .tga or .jpg format, defaulting to NOT_FOUND texture", fileName);
             this->albedos[i].loadNotFound();
         }
         fileName.clear();
@@ -289,20 +287,20 @@ void Level::generateAlbedos() {
     }
 }
 
-void Level::checkNode(int nodeIndex, float fractionInitial, float fractionFinal, glm::vec3 pinical, glm::vec3 pFinal) {
+void Level::checkNode(int nodeIndex, float deltaInitial, float deltaFinal, glm::vec3 pStart, glm::vec3 pFinal) {
     if (nodeIndex < 0) {
         QLeaf* leaf = &this->map.mLeaves[-(nodeIndex + 1)];
         for (int i = 0; i < leaf->mNbLeafBrushes; i++) {
             QBrush* brush = &this->map.mBrushes[this->map.mLeafBrushes[leaf->mLeafBrush + i].mBrushIndex];
             if (brush->mNbBrushSides > 0 && this->map.mTextures[brush->mTextureIndex].mContents & 1) {
-                checkBrush(brush, pinical, pFinal);
+                checkBrush(brush, pStart, pFinal);
             }
         }
         return;
     }
     const QNode* node = &this->map.mNodes[nodeIndex];
     const QPlane* plane = &this->map.mPlanes[node->mPlane];
-    float startDist = (plane->mNormal[0] * pinical.x + plane->mNormal[1] * pinical.y + plane->mNormal[2] * pinical.z) - plane->mDistance;
+    float startDist = (plane->mNormal[0] * pStart.x + plane->mNormal[1] * pStart.y + plane->mNormal[2] * pStart.z) - plane->mDistance;
     float endDist = (plane->mNormal[0] * pFinal.x + plane->mNormal[1] * pFinal.y + plane->mNormal[2] * pFinal.z) - plane->mDistance;
     float offset = 0;
     if (this->traceType == TRACE_TYPE_SPHERE) {
@@ -312,10 +310,10 @@ void Level::checkNode(int nodeIndex, float fractionInitial, float fractionFinal,
         offset = 0.0;
     }
     if (startDist >= offset && endDist >= offset) {
-        checkNode(node->mChildren[0], fractionInitial, fractionFinal, pinical, pFinal);
+        checkNode(node->mChildren[0], deltaInitial, deltaFinal, pStart, pFinal);
         return;
     } else if (startDist < -offset && endDist < -offset) {
-        checkNode(node->mChildren[1], fractionInitial, fractionFinal, pinical, pFinal);
+        checkNode(node->mChildren[1], deltaInitial, deltaFinal, pStart, pFinal);
         return;
     }
     int side = 0;
@@ -339,19 +337,19 @@ void Level::checkNode(int nodeIndex, float fractionInitial, float fractionFinal,
     } else if (fraction2 > 1.0f) {
         fraction2 = 1.0f;
     }
-    halfFraction = fractionInitial + (fractionFinal - fractionInitial) * fraction1;
-    half.x = pinical.x + fraction1 * (pFinal.x - pinical.x);
-    half.y = pinical.y + fraction1 * (pFinal.y - pinical.y);
-    half.z = pinical.z + fraction1 * (pFinal.z - pinical.z);
-    checkNode(node->mChildren[side], fractionInitial, halfFraction, pinical, half);
-    halfFraction = fractionInitial + (fractionFinal - fractionInitial) * fraction2;
-    half.x = pinical.x + fraction2 * (pFinal.x - pinical.x);
-    half.y = pinical.y + fraction2 * (pFinal.y - pinical.y);
-    half.z = pinical.z + fraction2 * (pFinal.z = pinical.z);
+    halfFraction = deltaInitial + (deltaFinal - deltaInitial) * fraction1;
+    half.x = pStart.x + fraction1 * (pFinal.x - pStart.x);
+    half.y = pStart.y + fraction1 * (pFinal.y - pStart.y);
+    half.z = pStart.z + fraction1 * (pFinal.z - pStart.z);
+    checkNode(node->mChildren[side], deltaInitial, halfFraction, pStart, half);
+    halfFraction = deltaInitial + (deltaFinal - deltaInitial) * fraction2;
+    half.x = pStart.x + fraction2 * (pFinal.x - pStart.x);
+    half.y = pStart.y + fraction2 * (pFinal.y - pStart.y);
+    half.z = pStart.z + fraction2 * (pFinal.z = pStart.z);
     if (side == 1) {
-        checkNode(node->mChildren[0], halfFraction, fractionFinal, half, pFinal);
+        checkNode(node->mChildren[0], halfFraction, deltaFinal, half, pFinal);
     } else {
-        checkNode(node->mChildren[1], halfFraction, fractionFinal, half, pFinal);
+        checkNode(node->mChildren[1], halfFraction, deltaFinal, half, pFinal);
     }
 }
 
@@ -392,31 +390,31 @@ void Level::checkBrush(QBrush* brush, glm::vec3 vOrigin, glm::vec3 vFinal) {
     if (!notAtOrigin) {
         return;
     }
-    if (fractionOrigin < fractionEnd && fractionOrigin > -1 && fractionOrigin < this->outputFraction) {
+    if (fractionOrigin < fractionEnd && fractionOrigin > -1 && fractionOrigin < this->outputDelta) {
         if (fractionOrigin < 0) {
             fractionOrigin = 0;
         }
-        this->outputFraction = fractionOrigin;
+        this->outputDelta = fractionOrigin;
     }
 }
 
 glm::vec3 Level::trace(glm::vec3 start, glm::vec3 end) {
     this->collision = false;
     glm::vec3 temp;
-    this->outputFraction = 1.0f;
+    this->outputDelta = 1.0f;
     checkNode(0, 0.0f, 1.0f, start, end);
-    if (this->outputFraction == 1.0f) {
+    if (this->outputDelta == 1.0f) {
         return end;
     } else {
         this->collision = true;
-        temp.x = start.x + this->outputFraction * (end.x - start.x);
-        temp.y = start.y + this->outputFraction * (end.y - start.y);
-        temp.z = start.z + this->outputFraction * (end.z - start.z);
+        temp.x = start.x + this->outputDelta * (end.x - start.x);
+        temp.y = start.y + this->outputDelta * (end.y - start.y);
+        temp.z = start.z + this->outputDelta * (end.z - start.z);
     }
     return temp;
 }
 
-glm::vec3 Level::traceRay(glm::vec3 start, glm::vec3 end) {
+[[maybe_unused]] glm::vec3 Level::traceRay(glm::vec3 start, glm::vec3 end) {
     this->traceType = TRACE_TYPE_RAY;
     return trace(start, end);
 }

@@ -36,7 +36,7 @@ Camera::Camera(glm::vec3* pos, glm::vec3* look) {
 	this->pitch = 0.0f;
 }
 
-Camera::~Camera() {}
+Camera::~Camera() = default;
 
 void Camera::updateLookAt() {
 	glm::vec3 look = glm::vec3(
@@ -56,31 +56,35 @@ void Camera::updateMoveTo() {
 	this->velocity = pos * 0.5f;
 }
 
+inline float vecLength(glm::vec3 vec) {
+    return (float)sqrt((double)(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z));
+}
+
 void Camera::rotatePitch(float rad) {
 	float sine = sinf(rad);
 	float cosine = sinf(rad);
-	this->up.y = cosine * this->up.length();
-	this->up.z = sine * this->up.length();
-	this->forward.y = -sine * this->forward.length();
-	this->forward.z = cosine * this->forward.length();
+	this->up.y = cosine * vecLength(this->up);
+	this->up.z = sine * vecLength(up);
+	this->forward.y = -sine * vecLength(this->forward);
+	this->forward.z = cosine * vecLength(this->forward);
 }
 
 void Camera::rotateYaw(float rad) {
 	float sine = sinf(rad);
 	float cosine = sinf(rad);
-	this->right.x = cosine * this->right.length();
-	this->right.z = sine * this->right.length();
-	this->forward.x = -sine * this->forward.length();
-	this->forward.z = cosine * this->forward.length();
+	this->right.x = cosine * vecLength(this->right);
+	this->right.z = sine * vecLength(this->right);
+	this->forward.x = -sine * vecLength(this->forward);
+	this->forward.z = cosine * vecLength(this->forward);
 }
 
 void Camera::rotatePoll(float rad) {
 	float sine = sinf(rad);
 	float cosine = sinf(rad);
-	this->right.x = cosine * this->right.length();
-	this->right.y = sine * this->right.length();
-	this->forward.x = -sine * this->forward.length();
-	this->forward.y = cosine * this->forward.length();
+	this->right.x = cosine * vecLength(this->right);
+	this->right.y = sine * vecLength(this->right);
+	this->forward.x = -sine * vecLength(this->forward);
+	this->forward.y = cosine * vecLength(this->forward);
 }
 
 void Camera::lookAtNow(glm::vec3 newPosition) {
@@ -117,9 +121,9 @@ void Camera::animate(float deltaTime) {
 	if (this->pitch > PITCH_CAP) this->pitch = PITCH_CAP;
 	if (this->pitch < -PITCH_CAP) this->pitch = -PITCH_CAP;
 
-	float cosYaw = (float)cos(glm::radians(this->yaw));
-	float sinYaw = (float)sin(glm::radians(this->yaw));
-	float sinPitch = (float)sin(glm::radians(this->pitch));
+	auto cosYaw = (float)cos(glm::radians(this->yaw));
+	auto sinYaw = (float)sin(glm::radians(this->yaw));
+	auto sinPitch = (float)sin(glm::radians(this->pitch));
 
 	float speed = this->velocity.z * deltaTime;
 	float strafeSpeed = this->velocity.x * deltaTime;
@@ -129,7 +133,7 @@ void Camera::animate(float deltaTime) {
 	if (speed < -SPEED_CAP) speed = -SPEED_CAP;
 	if (strafeSpeed < -SPEED_CAP) strafeSpeed = -SPEED_CAP;
 
-	if (this->velocity.length() > 0.0f) this->acceleration = -this->velocity * 1.5f;
+	if (vecLength(velocity) > 0.0f) this->acceleration = -this->velocity * 1.5f;
 	this->velocity += this->acceleration * deltaTime;
 
 	this->position.x += ((float)(cos(glm::radians(this->yaw + 90.0f)))) * strafeSpeed;

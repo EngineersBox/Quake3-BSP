@@ -1,7 +1,7 @@
 #include "frustum.hpp"
-#include <math.h>
-
-#define FIRST_OBJECT_ID  3                              
+#include <cmath>
+#include <algorithm>
+#include <array>
 
 enum FrustumSide {
     RIGHT = 0,
@@ -19,7 +19,7 @@ enum PlaneData{
     D = 3  // Dist from plane to origin
 };
 
-void normalizePlane(float frustum[6][4], int side) {
+void normalizePlane(std::array<std::array<float, 4>, 6> frustum, int side) {
     float magnitude = 1.0f / (float)sqrt(
         frustum[side][A] * frustum[side][A]
         + frustum[side][B] * frustum[side][B]
@@ -105,50 +105,56 @@ void Frustum::calculateFrustum() {
 }
 
 bool Frustum::pointInFrustum(float x, float y, float z) {
-    for (int i = 0; i < 6; i++) {
-        if (this->frustum[i][A] * x + this->frustum[i][B] * y + this->frustum[i][C] * z + this->frustum[i][D] <= 0) {
-            return false;
+    return std::none_of(
+        this->frustum.begin(),
+        this->frustum.end(),
+        [x,y,z](const std::array<float, 4> &i){
+            return i[A] * x + i[B] * y + i[C] * z + i[D] <= 0;
         }
-    }
-    return true;
+    );
 }
 
 
 bool Frustum::sphereInFrustum(float x, float y, float z, float radius) {
-    for (int i = 0; i < 6; i++) {
-        if (this->frustum[i][A] * x + this->frustum[i][B] * y + this->frustum[i][C] * z + this->frustum[i][D] <= -radius) {
-            return false;
+    return std::none_of(
+        this->frustum.begin(),
+        this->frustum.end(),
+        [x,y,z, radius](const std::array<float, 4> &i){
+            return i[A] * x + i[B] * y + i[C] * z + i[D] <= -radius;
         }
-    }
-    return true;
+    );
 }
 
 bool Frustum::cubeInFrustum(float x, float y, float z, float size) {
-    for (int i = 0; i < 6; i++) {
-        if (this->frustum[i][A] * (x - size) + this->frustum[i][B] * (y - size) + this->frustum[i][C] * (z - size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x + size) + this->frustum[i][B] * (y - size) + this->frustum[i][C] * (z - size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x - size) + this->frustum[i][B] * (y + size) + this->frustum[i][C] * (z - size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x + size) + this->frustum[i][B] * (y + size) + this->frustum[i][C] * (z - size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x - size) + this->frustum[i][B] * (y - size) + this->frustum[i][C] * (z + size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x + size) + this->frustum[i][B] * (y - size) + this->frustum[i][C] * (z + size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x - size) + this->frustum[i][B] * (y + size) + this->frustum[i][C] * (z + size) + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * (x + size) + this->frustum[i][B] * (y + size) + this->frustum[i][C] * (z + size) + this->frustum[i][D] > 0) continue;
-        return false;
-    }
-    return true;
+    return std::none_of(
+            this->frustum.begin(),
+            this->frustum.end(),
+            [x,y,z, size](const std::array<float, 4> &i){
+                return (i[A] * (x - size) + i[B] * (y - size) + i[C] * (z - size) + i[D] > 0)
+                    || (i[A] * (x + size) + i[B] * (y - size) + i[C] * (z - size) + i[D] > 0)
+                    || (i[A] * (x - size) + i[B] * (y + size) + i[C] * (z - size) + i[D] > 0)
+                    || (i[A] * (x + size) + i[B] * (y + size) + i[C] * (z - size) + i[D] > 0)
+                    || (i[A] * (x - size) + i[B] * (y - size) + i[C] * (z + size) + i[D] > 0)
+                    || (i[A] * (x + size) + i[B] * (y - size) + i[C] * (z + size) + i[D] > 0)
+                    || (i[A] * (x - size) + i[B] * (y + size) + i[C] * (z + size) + i[D] > 0)
+                    || (i[A] * (x + size) + i[B] * (y + size) + i[C] * (z + size) + i[D] > 0);
+            }
+    );
 }
 
 bool Frustum::boxInFrustum(float x, float y, float z, float x2, float y2, float z2) {
-    for (int i = 0; i < 6; i++) {
-        if (this->frustum[i][A] * x + this->frustum[i][B] * y + this->frustum[i][C] * z + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x2 + this->frustum[i][B] * y + this->frustum[i][C] * z + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x + this->frustum[i][B] * y2 + this->frustum[i][C] * z + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x2 + this->frustum[i][B] * y2 + this->frustum[i][C] * z + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x + this->frustum[i][B] * y + this->frustum[i][C] * z2 + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x2 + this->frustum[i][B] * y + this->frustum[i][C] * z2 + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x + this->frustum[i][B] * y2 + this->frustum[i][C] * z2 + this->frustum[i][D] > 0) continue;
-        if (this->frustum[i][A] * x2 + this->frustum[i][B] * y2 + this->frustum[i][C] * z2 + this->frustum[i][D] > 0) continue;
-        return false;
-    }
-    return true;
+    return std::none_of(
+            this->frustum.begin(),
+            this->frustum.end(),
+            [x,x2,y,y2,z,z2](const std::array<float, 4> &i){
+                return (i[A] * x + i[B] * y + i[C] * z + i[D] > 0)
+                    || (i[A] * x2 + i[B] * y + i[C] * z + i[D] > 0)
+                    || (i[A] * x + i[B] * y2 + i[C] * z + i[D] > 0)
+                    || (i[A] * x2 + i[B] * y2 + i[C] * z + i[D] > 0)
+                    || (i[A] * x + i[B] * y + i[C] * z2 + i[D] > 0)
+                    || (i[A] * x2 + i[B] * y + i[C] * z2 + i[D] > 0)
+                    || (i[A] * x + i[B] * y2 + i[C] * z2 + i[D] > 0)
+                    || (i[A] * x2 + i[B] * y2 + i[C] * z2 + i[D] > 0);
+            }
+    );
 }

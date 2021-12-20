@@ -24,8 +24,9 @@ public:
 	Engine(const char* name, bool fscreen, int width, int height) :
 		Window(name, fscreen, width, height),
 		timer(new HighResTimer) {}
-	~Engine() {}
-	int eventLoop();
+	~Engine() override = default;
+
+    [[noreturn]] int eventLoop();
 };
 
 #endif // ENGINE_H

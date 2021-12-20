@@ -29,7 +29,7 @@ protected:
 	virtual void onMouseDownR(float _x, float _y) {}
 	virtual void onMouseUpL() {}
 	virtual void onMouseUpR() {}
-	virtual void onMouseMove(int _x, int _y, int centreX, int centreY) {}
+	virtual void onMouseMove(int _x, int _y, int _centreX, int _centreY) {}
 	virtual void onMouseMove(int deltaX, int deltaY) {}
 	virtual void onMouseDragL(int _x, int _y, int dx, int dy) {}
 	virtual void onMouseDragR(int _x, int _y, int dx, int dy) {}
@@ -42,8 +42,8 @@ private:
 	void destroy();
 	void resize();
 
-	float normMousePosX(int _x);
-	float normMousePosY(int _y);
+	float normMousePosX(int _x) const;
+	float normMousePosY(int _y) const;
 public:
 	int width;
 	int height;
@@ -58,7 +58,7 @@ public:
 
 	InputManager *inputManager;
 
-	Window() {}
+	Window() = default;
 	Window(const char *title, bool fullscreen, int width, int height);
 	virtual ~Window();
 

@@ -24,10 +24,10 @@ protected:
 	World* onGetWorld() { return this->gameWorld; }
 
 	void onPrepare();
-	void onMouseDownL(float x, float y);
-	void onMouseMove(int deltaX, int deltaY);
-	void onMouseMove(int x, int y, int centerX, int centerY);
-	void onKeyDown(SDL_Scancode nVirtKey);
+	void onMouseDownL(float x, float y) override;
+	void onMouseMove(int deltaX, int deltaY) override;
+	void onMouseMove(int x, int y, int centerX, int centerY) override;
+	void onKeyDown(SDL_Scancode nVirtKey) override;
 
 public:
 	GEngine() {
@@ -37,11 +37,11 @@ public:
 
 	GEngine(const char* name, bool fscreen, int w, int h);
 
-	~GEngine() {
+	~GEngine() override {
 		delete this->gameWorld;
 		delete this->gameCamera;
-		this->gameWorld = NULL;
-		this->gameCamera = NULL;
+		this->gameWorld = nullptr;
+		this->gameCamera = nullptr;
 	}
 };
 

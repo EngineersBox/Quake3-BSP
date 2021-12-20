@@ -17,6 +17,8 @@
 #include <OpenGL/glu.h>
 #endif
 
+#include <array>
+
 class Frustum {
 public:
     void calculateFrustum();
@@ -25,7 +27,7 @@ public:
     bool cubeInFrustum(float x, float y, float z, float size);
     bool boxInFrustum(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
 private:
-    float frustum[6][4];
+    std::array<std::array<float, 4>, 6> frustum;
 };
 
 #endif // FRUSTUM_H

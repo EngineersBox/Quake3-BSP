@@ -26,13 +26,13 @@ void Window::resize() {
 	SDL_SetWindowSize(this->window, this->width, this->height);
 }
 
-float Window::normMousePosX(int _x) {
-	return this->mouseSensitivity * (float)(_x - this->width / 2) / this->aspect;
+float Window::normMousePosX(int _x) const {
+	return this->mouseSensitivity * (float)(_x - this->width / 2.0) / (float) this->aspect;
 }
 
 
-float Window::normMousePosY(int _y) {
-	return this->mouseSensitivity * (float)(_y - this->height / 2) / this->aspect;
+float Window::normMousePosY(int _y) const {
+	return this->mouseSensitivity * (float)(_y - this->height / 2.0) / (float) this->aspect;
 }
 
 
@@ -128,7 +128,7 @@ int Window::processEvent(SDL_Event _event) {
 	return 0;
 }
 
-void Window::startFullscreen(int width, int height) {
+void Window::startFullscreen(int w, int h) {
 	if (!this->fullscreen) {
 		SDL_SetWindowFullscreen(this->window, 0);
 		SDL_ShowCursor(SDL_DISABLE);
@@ -170,7 +170,7 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 		exit(1);
 	}
 	this->glContext = SDL_GL_CreateContext(this->window);
-	if (this->glContext == NULL) {
+	if (this->glContext == nullptr) {
 		fprintf(stderr, "Could not get OpenGL context: %s\n", SDL_GetError());
 		exit(1);
 	}
