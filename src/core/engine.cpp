@@ -32,8 +32,7 @@ void Engine::cycle(float deltaTime) {
 
 	if (this->useInput) tickInput(deltaTime);
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.f);
-	glClear(GL_COLOR_BUFFER_BIT);
+//	glClear(GL_COLOR_BUFFER_BIT);
 
 	onInit();
 	if (world != nullptr) {
@@ -46,6 +45,13 @@ void Engine::cycle(float deltaTime) {
 		//world->animate(deltaTime);
 		world->draw(camera);
 	}
+    glColor3f(255,0,0);
+    glBegin(GL_QUADS);
+    glVertex3f(0.0f, 0.0f, 0.0f);
+    glVertex3f(500.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 500.0f, 0.0f);
+    glVertex3f(500.0f, 500.0f, 0.0f);
+    glEnd();
 
 	swapBuffers();
 }

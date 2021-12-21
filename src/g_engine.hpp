@@ -23,7 +23,7 @@ protected:
 	Camera* onGetCamera() { return this->gameCamera; }
 	World* onGetWorld() { return this->gameWorld; }
 
-	void onPrepare();
+	void onInit();
 	void onMouseDownL(float x, float y) override;
 	void onMouseMove(int deltaX, int deltaY) override;
 	void onMouseMove(int x, int y, int centerX, int centerY) override;

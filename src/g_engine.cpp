@@ -9,7 +9,7 @@ GEngine::GEngine(const char* name, bool fscreen, int w, int h) :
 }
 
 
-void GEngine::onPrepare() {
+void GEngine::onInit() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_SMOOTH);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

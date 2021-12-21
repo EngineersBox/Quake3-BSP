@@ -5,9 +5,9 @@ World::World() = default;
 World::World(Camera* camera) {
 	this->camera = camera;
     this->level = new Level("/Users/jackkilrain/Desktop/Projects/C:C++/Quake-Id-Tech-2/models/final3.bsp");
-    camera->position.y=100;
+    camera->position.y=0;
     camera->position.x=0;
-    camera->position.z=00;
+    camera->position.z=0;
 }
 
 World::~World() {

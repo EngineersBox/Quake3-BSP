@@ -25,8 +25,8 @@
 class Level : public Element {
 private:
 	QMapQ3 map;
-	std::vector<Texture> lightmaps;
-	std::vector<Texture> albedos;
+	std::vector<Material::Texture> lightmaps;
+	std::vector<Material::Texture> albedos;
 
 	void convertEdges();
     void bindLightmapAndTexture(int faceIndex);

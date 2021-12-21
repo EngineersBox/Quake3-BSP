@@ -1,7 +1,7 @@
 ﻿#include "g_main.hpp"
 
-constexpr int WIDTH = 640;
-constexpr int HEIGHT = 480;
+constexpr int WIDTH = 1024;
+constexpr int HEIGHT = 576;
 
 #define PROJECT_SOURCE "/Users/jackkilrain/Desktop/Projects/C:C++/Quake-Id-Tech-2/"
 

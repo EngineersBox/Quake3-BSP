@@ -4,7 +4,7 @@
 #define RGBA_BIT_DEPTH 32
 #define PIXEL_BYTE_SIZE 8
 
-void Texture::load(const char* filename) {
+void Material::Texture::load(const char* filename) {
 	this->image = IMG_Load(filename);
 	if (!this->image) {
 		spdlog::error("Could not load image: {0}", SDL_GetError());
@@ -40,7 +40,7 @@ void Texture::load(const char* filename) {
 	}
 }
 
-void Texture::loadNotFound() {
+void Material::Texture::loadNotFound() {
     this->width = 128;
     this->height = 128;
     this->bitDepth = RGBA_BIT_DEPTH;
@@ -105,7 +105,7 @@ void Texture::loadNotFound() {
     }
 }
 
-void Texture::unload() {
+void Material::Texture::unload() {
 	glDeleteTextures(1, &this->id);
 	if (this->image) {
 		SDL_FreeSurface(this->image);
@@ -115,7 +115,7 @@ void Texture::unload() {
 	this->data = nullptr;
 }
 
-Uint32 Texture::getPixel(SDL_Surface* surface, int x, int y) {
+Uint32 Material::Texture::getPixel(SDL_Surface* surface, int x, int y) {
 	int bytesPerPixel = surface->format->BytesPerPixel;
 	Uint8* pixel = (Uint8*)surface->pixels + y * surface->pitch + x * bytesPerPixel;
 	switch (bytesPerPixel) {

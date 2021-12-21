@@ -1,4 +1,7 @@
 #include "level.hpp"
+#include <vector>
+#include <iterator>
+#include "../../utils/arrayUtils.hpp"
 
 #define EPSILON 0.03125f
 #define TRACE_TYPE_RAY 0
@@ -80,13 +83,13 @@ void Level::onDraw(Camera* camera) {
 	while (nLeaves--) {
 		QLeaf* leaf = &this->map.mLeaves[nLeaves];
 		if (!clusterVisible(cluster, leaf->mCluster)) continue;
-		if (!this->frustum.boxInFrustum(
-			(float)leaf->mMins[0],
-			(float)leaf->mMins[1],
-			(float)leaf->mMins[2],
-			(float)leaf->mMaxs[0],
-			(float)leaf->mMaxs[1],
-			(float)leaf->mMaxs[2])) continue;
+//		if (!this->frustum.boxInFrustum(
+//			(float)leaf->mMins[0],
+//			(float)leaf->mMins[1],
+//			(float)leaf->mMins[2],
+//			(float)leaf->mMaxs[0],
+//			(float)leaf->mMaxs[1],
+//			(float)leaf->mMaxs[2])) continue;
 		int nFaces = leaf->mNbLeafFaces;
 		while (nFaces--) {
 			int faceIndex = this->map.mLeafFaces[leaf->mLeafFace + nFaces].mFaceIndex;
@@ -223,8 +226,20 @@ void Level::generateLightmaps() {
     }
 }
 
+
+
 void Level::generateAlbedos() {
-    std::string fileName,tgaFileName,jpgFileName;
+    spdlog::debug(
+        "Using supported image file extensions: [{0}]",
+        ArrayUtils::join(
+            std::vector<std::string>(
+                Material::SUPPORTED_FILE_EXTENSIONS,
+                Material::SUPPORTED_FILE_EXTENSIONS + std::ssize(Material::SUPPORTED_FILE_EXTENSIONS)
+            ),
+            ", "
+        )
+    );
+    std::string fileName,fileAndExt;
     char *route;
 
     int c;
@@ -241,29 +256,20 @@ void Level::generateAlbedos() {
             }
             c++;
         }
-        tgaFileName = fileName + ".tga";
-        jpgFileName = fileName + ".jpg";
-
-
         bool opened = false;
-        if (fopen(tgaFileName.data(), "r")) {
-            spdlog::info("Loading texture: {}", tgaFileName);
-            route = new char[tgaFileName.size() + 1];
-            strcpy(route, tgaFileName.c_str());
-            this->albedos[i].load(route);
-            delete[] route;
-            opened = true;
-        }
-        if (fopen(jpgFileName.data(), "r")) {
-            spdlog::info("Loading texture: {}", jpgFileName);
-            route = new char[jpgFileName.size() + 1];
-            strcpy(route, jpgFileName.c_str());
-            this->albedos[i].load(route);
-            delete[] route;
-            opened = true;
+        for (auto &ext : Material::SUPPORTED_FILE_EXTENSIONS) {
+            fileAndExt = fileName + ext;
+            if (fopen(fileAndExt.data(), "r")) {
+                spdlog::info("Loading texture: {}", fileAndExt);
+                route = new char[fileAndExt.size() + 1];
+                strcpy(route, fileAndExt.c_str());
+                this->albedos[i].load(route);
+                delete[] route;
+                opened = true;
+            }
         }
         if (!opened) {
-            spdlog::debug("Could not find \"{0}\" in either .tga or .jpg format, defaulting to NOT_FOUND texture", fileName);
+            spdlog::warn("Could not find \"{0}\" in any supported format, defaulting to NOT_FOUND texture", fileName);
             this->albedos[i].loadNotFound();
         }
         fileName.clear();

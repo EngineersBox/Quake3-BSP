@@ -15,27 +15,38 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <spdlog/spdlog.h>
+#include <array>
+#include <iterator>
 
-class Texture {
-public:
-	int width;
-	int height;
-	int bitDepth;
-	unsigned int id;
+namespace Material {
+    const std::string SUPPORTED_FILE_EXTENSIONS[4]{
+            ".tga",
+            ".jpeg",
+            ".jpg",
+            ".png"
+    };;
 
-	SDL_Surface* image;
-	GLubyte* data;
+    class Texture {
+    public:
+        int width;
+        int height;
+        int bitDepth;
+        unsigned int id;
 
-	Texture() {
-		this->data = nullptr;
-		this->image = nullptr;
-	}
-	~Texture() { unload(); }
+        SDL_Surface* image;
+        GLubyte* data;
 
-	static Uint32 getPixel(SDL_Surface* surface, int x, int y);
-	void load(const char* filename);
-    void loadNotFound();
-	void unload();
-};
+        Texture() {
+            this->data = nullptr;
+            this->image = nullptr;
+        }
+        ~Texture() { unload(); }
+
+        static Uint32 getPixel(SDL_Surface* surface, int x, int y);
+        void load(const char* filename);
+        void loadNotFound();
+        void unload();
+    };
+}
 
 #endif // TEXTURE_H
