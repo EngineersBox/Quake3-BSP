@@ -146,15 +146,15 @@ bool Frustum::quadInFrustum(float x, float y, float z, float x2, float y2, float
     return std::all_of(
         this->frustum.begin(),
         this->frustum.end(),
-        [x,sizeX,y,sizeY,z,sizeZ](const std::array<float, 4> &i){
+        [x,x2,y,y2,z,z2](const std::array<float, 4> &i){
             return (i[A] * x + i[B] * y + i[C] * z + i[D] > 0)
-                || (i[A] * sizeX + i[B] * y + i[C] * z + i[D] > 0)
-                || (i[A] * x + i[B] * sizeY + i[C] * z + i[D] > 0)
-                || (i[A] * sizeX + i[B] * sizeY + i[C] * z + i[D] > 0)
-                || (i[A] * x + i[B] * y + i[C] * sizeZ + i[D] > 0)
-                || (i[A] * sizeX + i[B] * y + i[C] * sizeZ + i[D] > 0)
-                || (i[A] * x + i[B] * sizeY + i[C] * sizeZ + i[D] > 0)
-                || (i[A] * sizeX + i[B] * sizeY + i[C] * sizeZ + i[D] > 0);
+                || (i[A] * x2 + i[B] * y + i[C] * z + i[D] > 0)
+                || (i[A] * x + i[B] * y2 + i[C] * z + i[D] > 0)
+                || (i[A] * x2 + i[B] * y2 + i[C] * z + i[D] > 0)
+                || (i[A] * x + i[B] * y + i[C] * z2 + i[D] > 0)
+                || (i[A] * x2 + i[B] * y + i[C] * z2 + i[D] > 0)
+                || (i[A] * x + i[B] * y2 + i[C] * z2 + i[D] > 0)
+                || (i[A] * x2 + i[B] * y2 + i[C] * z2 + i[D] > 0);
         }
     );
 }
