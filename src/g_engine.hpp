@@ -20,8 +20,8 @@ private:
 	World* gameWorld;
 
 protected:
-	Camera* onGetCamera() { return this->gameCamera; }
-	World* onGetWorld() { return this->gameWorld; }
+	Camera* getCamera() override { return this->gameCamera; }
+	World* getWorld() override { return this->gameWorld; }
 
 	void onInit();
 	void onMouseDownL(float x, float y) override;

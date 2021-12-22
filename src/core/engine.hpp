@@ -23,14 +23,10 @@ protected:
 	void swapBuffers() { SDL_GL_SwapWindow(this->window); }
 public:
 	Engine(): timer(new HighResTimer) {
-        this->camera = new Camera();
-        this->world = new World(this->camera);
 	}
 	Engine(const char* name, bool fscreen, int width, int height) :
 		Window(name, fscreen, width, height),
 		timer(new HighResTimer) {
-        this->camera = new Camera();
-        this->world = new World(this->camera);
     }
 	~Engine() override = default;
 

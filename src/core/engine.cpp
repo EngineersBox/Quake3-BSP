@@ -32,7 +32,7 @@ void Engine::cycle(float deltaTime) {
 
 	if (this->useInput) tickInput(deltaTime);
 
-//	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	onInit();
 	if (world != nullptr) {
