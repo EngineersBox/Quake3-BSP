@@ -83,13 +83,13 @@ void Level::onDraw(Camera* camera) {
 	while (nLeaves--) {
 		QLeaf* leaf = &this->map.mLeaves[nLeaves];
 		if (!clusterVisible(cluster, leaf->mCluster)) continue;
-//		if (!this->frustum.boxInFrustum(
-//			(float)leaf->mMins[0],
-//			(float)leaf->mMins[1],
-//			(float)leaf->mMins[2],
-//			(float)leaf->mMaxs[0],
-//			(float)leaf->mMaxs[1],
-//			(float)leaf->mMaxs[2])) continue;
+		if (!this->frustum.quadInFrustum(
+                (float) leaf->mMins[0],
+                (float) leaf->mMins[1],
+                (float) leaf->mMins[2],
+                (float) leaf->mMaxs[0],
+                (float) leaf->mMaxs[1],
+                (float) leaf->mMaxs[2])) continue;
 		int nFaces = leaf->mNbLeafFaces;
 		while (nFaces--) {
 			int faceIndex = this->map.mLeafFaces[leaf->mLeafFace + nFaces].mFaceIndex;

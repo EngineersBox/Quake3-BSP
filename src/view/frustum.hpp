@@ -25,7 +25,7 @@ public:
     bool pointInFrustum(float x, float y, float z);
     bool sphereInFrustum(float x, float y, float z, float radius);
     bool cubeInFrustum(float x, float y, float z, float size);
-    bool boxInFrustum(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
+    bool quadInFrustum(float x, float y, float z, float sizeX, float sizeY, float sizeZ);
 private:
     std::array<std::array<float, 4>, 6> frustum;
 };
