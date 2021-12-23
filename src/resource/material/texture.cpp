@@ -43,32 +43,19 @@ void Material::Texture::load(const char* filename) {
 void Material::Texture::loadNotFound() {
     this->width = 128;
     this->height = 128;
-    this->bitDepth = RGBA_BIT_DEPTH;
+    this->bitDepth = RGB_BIT_DEPTH;
 
     int bytesPerPixel = this->bitDepth / PIXEL_BYTE_SIZE;
-    Uint32 rmask, gmask, bmask, amask;
-
-    #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-        rmask = 0xff000000;
-        gmask = 0x00ff0000;
-        bmask = 0x0000ff00;
-        amask = 0x000000ff;
-    #else
-        rmask = 0x000000ff;
-        gmask = 0x0000ff00;
-        bmask = 0x00ff0000;
-        amask = 0xff000000;
-    #endif
 
     this->image = SDL_CreateRGBSurface(
         0,
         this->width,
         this->height,
         this->bitDepth,
-        rmask,
-        gmask,
-        bmask,
-        amask
+        0,
+        0,
+        0,
+        0
     );
     if (this->image == nullptr) {
         spdlog::error("Could not create RGB surface: {0}", SDL_GetError());
@@ -93,13 +80,12 @@ void Material::Texture::loadNotFound() {
     int pos = 0;
     for (int y = 0; y < this->height; y++) {
         for (int x = 0; x < this->width; x++) {
-            Uint8 r, g, b, a;
+            Uint8 r, g, b;
             Uint32 pixel = Texture::getPixel(this->image, x, y);
-            SDL_GetRGBA(pixel, this->image->format, &r, &g, &b, &a);
+            SDL_GetRGB(pixel, this->image->format, &r, &g, &b);
             this->data[pos] = r;
-            this->data[pos+ 1] = g;
+            this->data[pos + 1] = g;
             this->data[pos + 2] = b;
-            this->data[pos + 3] = a;
             pos += bytesPerPixel;
         }
     }

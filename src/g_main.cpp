@@ -1,7 +1,7 @@
 ﻿#include "g_main.hpp"
 
-constexpr int WIDTH = 1024;
-constexpr int HEIGHT = 576;
+constexpr int WIDTH = 1920;
+constexpr int HEIGHT = 1080;
 
 int main(int, char**) {
 	QuakeLogger::initLogger();

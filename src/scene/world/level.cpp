@@ -129,14 +129,14 @@ inline void Level::bindLightmapAndTexture(int faceIndex) {
     if (this->map.mFaces[faceIndex].mTextureIndex >= 0) {
         glActiveTexture(GL_TEXTURE0);
         glClientActiveTexture(GL_TEXTURE0);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[faceIndex].mTexCoord[0]));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mTexCoord[0]));
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mTextureIndex].id);
     }
     if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
         glActiveTexture(GL_TEXTURE1);
         glClientActiveTexture(GL_TEXTURE1);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[faceIndex].mTexCoord[1]));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mTexCoord[1]));
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mLightmapIndex].id);
     }

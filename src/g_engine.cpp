@@ -32,21 +32,26 @@ void GEngine::onMouseDownL(float x, float y) {
 	// TODO
 }
 
+constexpr float velocityIncDelta = 1.5f;
 
 void GEngine::onKeyDown(SDL_Scancode nVirtKey) {
 	switch (nVirtKey) {
 	case SDL_SCANCODE_W:
-		this->gameCamera->velocity += glm::vec3(0.0, 0.0, 5.0);
+		this->gameCamera->velocity += glm::vec3(0.0, 0.0, velocityIncDelta);
 		break;
 	case SDL_SCANCODE_S:
-		this->gameCamera->velocity += glm::vec3(0, 0, -5.0);
+		this->gameCamera->velocity += glm::vec3(0, 0, -velocityIncDelta);
 		break;
 	case SDL_SCANCODE_A:
-		this->gameCamera->velocity += glm::vec3(5.0, 0.0, 0.0);
+		this->gameCamera->velocity += glm::vec3(-velocityIncDelta, 0.0, 0.0);
 		break;
 	case SDL_SCANCODE_D:
-		this->gameCamera->velocity += glm::vec3(-5.0, 0.0, 0.0);
+		this->gameCamera->velocity += glm::vec3(velocityIncDelta, 0.0, 0.0);
 		break;
+    case SDL_SCANCODE_SPACE:
+        this->gameCamera->moveTo(
+            this->gameCamera->position + glm::vec3(0.0, velocityIncDelta, 0.0)
+        );
 	case SDL_SCANCODE_F:
 		if (this->fullscreen) this->stopFullscreen();
 		else this->startFullscreen(this->width, this->height);
