@@ -27,23 +27,23 @@ void Engine::tickInput(float deltaTime) {
 }
 
 void Engine::cycle(float deltaTime) {
-	Camera* camera = getCamera();
-	World* world = getWorld();
+	Camera* _camera = getCamera();
+	World* _world = getWorld();
 
 	if (this->useInput) tickInput(deltaTime);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	onInit();
-	if (world != nullptr) {
-		world->init();
+    onCycle();
+	if (_world != nullptr) {
+		_world->init();
 	}
-	if (camera != nullptr) {
-		camera->animate(deltaTime);
+	if (_camera != nullptr) {
+		_camera->animate(deltaTime);
 	}
-	if (world != nullptr) {
-		//world->animate(deltaTime);
-		world->draw(camera);
+	if (_world != nullptr) {
+		//_world->animate(deltaTime);
+		_world->draw(_camera);
 	}
     glColor3f(255,0,0);
     glBegin(GL_QUADS);
@@ -60,6 +60,7 @@ void Engine::cycle(float deltaTime) {
 	SDL_Event _event;
 	if (!this->timer) this->timer = new HighResTimer();
 	this->timer->init();
+    onInit();
 	for (;;) {
 		cycle(this->timer->getElapsedSeconds(1));
 		while (SDL_PollEvent(&_event)) {

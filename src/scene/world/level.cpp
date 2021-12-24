@@ -13,9 +13,9 @@ Level::Level(const char* mapFilePath) {
 		convertEdges();
 		generateLightmaps();
 		generateAlbedos();
-        spdlog::info("Init lightmaps and textures");
+        spdlog::info("Initialised lightmaps and textures");
 	} else {
-		spdlog::error("Could not load map {0}", mapFilePath);
+		spdlog::error("Could not load map: {0}", mapFilePath);
 	}
 }
 
