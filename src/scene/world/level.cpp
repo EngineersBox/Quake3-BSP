@@ -116,6 +116,8 @@ inline void Level::bindLightmapAndTexture(int faceIndex) {
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mTextureIndex].id);
     }
+// TODO: Fix this lightmapping
+
 //    if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
 //        glActiveTexture(GL_TEXTURE1);
 //        glClientActiveTexture(GL_TEXTURE1);
@@ -214,9 +216,9 @@ void Level::generateAlbedos() {
     spdlog::debug(
         "Using supported image file extensions: [{0}]",
         ArrayUtils::join(
-            std::vector<std::string>(
-                Material::SUPPORTED_FILE_EXTENSIONS,
-                Material::SUPPORTED_FILE_EXTENSIONS + std::ssize(Material::SUPPORTED_FILE_EXTENSIONS)
+            std::vector<std::string_view>(
+                Material::SUPPORTED_FILE_EXTENSIONS.begin(),
+                Material::SUPPORTED_FILE_EXTENSIONS.end()
             ),
             ", "
         )
@@ -240,7 +242,7 @@ void Level::generateAlbedos() {
         }
         bool opened = false;
         for (auto &ext : Material::SUPPORTED_FILE_EXTENSIONS) {
-            fileAndExt = fileName + ext;
+            fileAndExt = fileName + std::string(ext);
             if (fopen(fileAndExt.data(), "r")) {
                 spdlog::info("Loading texture: {}", fileAndExt);
                 path = new char[fileAndExt.size() + 1];

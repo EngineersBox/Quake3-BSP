@@ -17,14 +17,16 @@
 #include <spdlog/spdlog.h>
 #include <array>
 #include <iterator>
+#include <string_view>
+#include "../../utils/arrayUtils.hpp"
 
 namespace Material {
-    const std::string SUPPORTED_FILE_EXTENSIONS[4]{
+    static constexpr const std::array<std::string_view, 4> SUPPORTED_FILE_EXTENSIONS = ArrayUtils::makeLiteralArray(
             ".tga",
             ".jpeg",
             ".jpg",
             ".png"
-    };;
+    );
 
     class Texture {
     public:

@@ -6,6 +6,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <string_view>
 
 namespace ArrayUtils {
     template <typename Range, typename Value = typename Range::value_type>
@@ -22,6 +23,16 @@ namespace ArrayUtils {
         }
 
         return os.str();
+    }
+
+    template <size_t N>
+    constexpr std::string_view stringView(const char (&literal)[N]) {
+        return std::string_view(literal, N - 1);
+    }
+
+    template <size_t... N>
+    constexpr std::array<std::string_view, sizeof...(N)> makeLiteralArray(const char (&... literals)[N]) {
+        return {{stringView(literals)...}};
     }
 }
 
