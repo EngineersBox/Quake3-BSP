@@ -28,9 +28,10 @@ void Material::Texture::load(const char* filename) {
 			} else {
 				SDL_GetRGBA(pixel, this->image->format, &r, &g, &b, &a);
 			}
+//            spdlog::info("Pixel {0}, R: {1}, G: {2}, B: {3}, A: {4}", pixel, r, g, b, a);
 
 			this->data[pos] = r;
-			this->data[pos+ 1] = g;
+			this->data[pos + 1] = g;
 			this->data[pos + 2] = b;
 			if (this->bitDepth == RGBA_BIT_DEPTH) {
 				this->data[pos + 3] = a;

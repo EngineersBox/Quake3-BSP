@@ -27,46 +27,41 @@ void Engine::tickInput(float deltaTime) {
 }
 
 void Engine::cycle(float deltaTime) {
-	Camera* _camera = getCamera();
-	World* _world = getWorld();
+	Camera* camera = getCamera();
+	World* world = getWorld();
 
 	if (this->useInput) tickInput(deltaTime);
 
 	glClear(GL_COLOR_BUFFER_BIT);
 
     onCycle();
-	if (_world != nullptr) {
-		_world->init();
+	if (world != nullptr) {
+		world->init();
 	}
-	if (_camera != nullptr) {
-		_camera->animate(deltaTime);
+	if (camera != nullptr) {
+		camera->animate(deltaTime);
 	}
-	if (_world != nullptr) {
-		//_world->animate(deltaTime);
-		_world->draw(_camera);
+	if (world != nullptr) {
+		world->animate(deltaTime);
+		world->draw(camera);
 	}
-    glColor3f(255,0,0);
-    glBegin(GL_QUADS);
-    glVertex3f(0.0f, 0.0f, 0.0f);
-    glVertex3f(500.0f, 0.0f, 0.0f);
-    glVertex3f(0.0f, 500.0f, 0.0f);
-    glVertex3f(500.0f, 500.0f, 0.0f);
-    glEnd();
 
 	swapBuffers();
 }
 
-[[noreturn]] int Engine::eventLoop() {
+int Engine::eventLoop() {
 	SDL_Event _event;
 	if (!this->timer) this->timer = new HighResTimer();
 	this->timer->init();
     onInit();
-	for (;;) {
-		cycle(this->timer->getElapsedSeconds(1));
-		while (SDL_PollEvent(&_event)) {
-			this->processEvent(_event);
-		}
-	}
+    GLenum error = GL_NO_ERROR;
+    while ((error = glGetError()) == GL_NO_ERROR) {
+        cycle(this->timer->getElapsedSeconds(1));
+        while (SDL_PollEvent(&_event)) {
+            this->processEvent(_event);
+        }
+    }
+    spdlog::error("OpenGL Error: 0x{0:x} {1}", error, gluErrorString(error));
 	delete timer;
 	return 0;
 }

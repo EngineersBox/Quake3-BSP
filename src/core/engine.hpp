@@ -37,7 +37,7 @@ public:
     }
 	~Engine() override = default;
 
-    [[noreturn]] int eventLoop();
+    int eventLoop();
 };
 
 #endif // ENGINE_H

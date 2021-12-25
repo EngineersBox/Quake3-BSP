@@ -183,7 +183,7 @@ Window::Window(const char* name, bool fscreen, int w, int h) {
 
 	if (this->useInput) this->inputManager->update();
 
-	SDL_ShowCursor(SDL_ENABLE);
+	SDL_ShowCursor(SDL_DISABLE);
 }
 
 Window::~Window() {

@@ -13,7 +13,7 @@ void GEngine::onInit() {
 
 void GEngine::onCycle() {
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_SMOOTH);
+	glShadeModel(GL_SMOOTH);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glEnable(GL_CULL_FACE);
@@ -34,7 +34,7 @@ void GEngine::onMouseDownL(float x, float y) {
 	// TODO
 }
 
-constexpr float velocityIncDelta = 1.5f;
+constexpr float velocityIncDelta = 2.5f;
 
 void GEngine::onKeyDown(SDL_Scancode nVirtKey) {
 	switch (nVirtKey) {
@@ -51,9 +51,8 @@ void GEngine::onKeyDown(SDL_Scancode nVirtKey) {
 		this->gameCamera->velocity += glm::vec3(velocityIncDelta, 0.0, 0.0);
 		break;
     case SDL_SCANCODE_SPACE:
-        this->gameCamera->moveTo(
-            this->gameCamera->position + glm::vec3(0.0, velocityIncDelta, 0.0)
-        );
+        this->gameCamera->velocity += glm::vec3(0.0, velocityIncDelta, 0.0);
+        break;
 	case SDL_SCANCODE_F:
 		if (this->fullscreen) this->stopFullscreen();
 		else this->startFullscreen(this->width, this->height);
@@ -90,11 +89,9 @@ void GEngine::onMouseMove(int deltaX, int deltaY) {
 void GEngine::onMouseMove(int x, int y, int centerX, int centerY) {
 	static float oldX;
 	static float oldY;
-	static float yaw = 0.0f;
-	static float pitch = 0.0f;
 
-	auto mX = (float)x;
-	auto mY = (float)y;
+	float mX = (float)x;
+    float mY = (float)y;
 
 	if (mX < centerX / 2.0)
 		this->gameCamera->yaw -= 0.25f * this->mouseSensitivity;

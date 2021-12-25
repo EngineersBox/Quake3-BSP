@@ -1,5 +1,6 @@
 #include "level.hpp"
 #include <vector>
+#include <algorithm>
 #include <iterator>
 #include "../../utils/arrayUtils.hpp"
 
@@ -66,8 +67,6 @@ void Level::convertEdges() {
 void Level::onCollision(Element* element) {}
 
 void Level::onDraw(Camera* camera) {
-	int leafIndex;
-	int cluster;
 	int nLeaves = this->map.mLeaves.size();
 
 	glDisable(GL_COLOR_MATERIAL);
@@ -75,8 +74,8 @@ void Level::onDraw(Camera* camera) {
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	leafIndex = findLeaf(camera->position);
-	cluster = this->map.mLeaves[leafIndex].mCluster;
+	int leafIndex = findLeaf(camera->position);
+	int cluster = this->map.mLeaves[leafIndex].mCluster;
 
 	this->frustum.calculateFrustum();
 	this->triangles = 0;
@@ -84,12 +83,13 @@ void Level::onDraw(Camera* camera) {
 		QLeaf* leaf = &this->map.mLeaves[nLeaves];
 		if (!clusterVisible(cluster, leaf->mCluster)) continue;
 		if (!this->frustum.quadInFrustum(
-                (float) leaf->mMins[0],
-                (float) leaf->mMins[1],
-                (float) leaf->mMins[2],
-                (float) leaf->mMaxs[0],
-                (float) leaf->mMaxs[1],
-                (float) leaf->mMaxs[2])) continue;
+            (float) leaf->mMins[0],
+            (float) leaf->mMins[1],
+            (float) leaf->mMins[2],
+            (float) leaf->mMaxs[0],
+            (float) leaf->mMaxs[1],
+            (float) leaf->mMaxs[2]
+            )) continue;
 		int nFaces = leaf->mNbLeafFaces;
 		while (nFaces--) {
 			int faceIndex = this->map.mLeafFaces[leaf->mLeafFace + nFaces].mFaceIndex;
@@ -108,23 +108,6 @@ void Level::onDraw(Camera* camera) {
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
-void Level::drawTriangle(int faceIndex) {
-    if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
-        glBindTexture(GL_TEXTURE_2D, this->lightmaps[this->map.mFaces[faceIndex].mLightmapIndex].id);
-        glEnable(GL_TEXTURE_2D);
-    }
-    glBegin(GL_TRIANGLE_FAN);
-    glNormal3f(this->map.mFaces[faceIndex].mNormal[0], this->map.mFaces[faceIndex].mNormal[1], this->map.mFaces[faceIndex].mNormal[2]);
-    for (int i = this->map.mFaces[faceIndex].mVertex; i < (this->map.mFaces[faceIndex].mVertex + this->map.mFaces[faceIndex].mNbVertices); i++) {
-        glTexCoord2f(this->map.mVertices[i].mTexCoord[1][0], this->map.mVertices[i].mTexCoord[1][1]);
-        glColor3ubv(this->map.mVertices[i].mColor);
-        glNormal3fv(this->map.mVertices[i].mNormal);
-        glVertex3fv(this->map.mVertices[i].mPosition);
-    }
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-}
-
 inline void Level::bindLightmapAndTexture(int faceIndex) {
     if (this->map.mFaces[faceIndex].mTextureIndex >= 0) {
         glActiveTexture(GL_TEXTURE0);
@@ -133,26 +116,26 @@ inline void Level::bindLightmapAndTexture(int faceIndex) {
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mTextureIndex].id);
     }
-    if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
-        glActiveTexture(GL_TEXTURE1);
-        glClientActiveTexture(GL_TEXTURE1);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mTexCoord[1]));
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mLightmapIndex].id);
-    }
+//    if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
+//        glActiveTexture(GL_TEXTURE1);
+//        glClientActiveTexture(GL_TEXTURE1);
+//        glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mTexCoord[1]));
+//        glEnable(GL_TEXTURE_2D);
+//        glBindTexture(GL_TEXTURE_2D, this->lightmaps[this->map.mFaces[faceIndex].mLightmapIndex].id);
+//    }
 }
 
 void Level::drawTriangleVA(int faceIndex) {
     bindLightmapAndTexture(faceIndex);
     glVertexPointer(3, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mPosition));
-    glNormalPointer(GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[1].mNormal));
+    glNormalPointer(GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mNormal));
     glDrawArrays(GL_TRIANGLE_FAN, this->map.mFaces[faceIndex].mVertex, this->map.mFaces[faceIndex].mNbVertices);
     glDisable(GL_TEXTURE_2D);
 }
 
 void Level::drawTriangleMesh(int faceIndex) {
     bindLightmapAndTexture(faceIndex);
-    glVertexPointer(3, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mPosition));
+    glVertexPointer(3, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[this->map.mFaces[faceIndex].mVertex].mPosition));
     glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(QVertex), &(this->map.mVertices[0].mColor));
     glTexCoordPointer(2, GL_FLOAT, sizeof(QVertex), &(this->map.mVertices[0].mTexCoord[1]));
     glDrawElements(GL_TRIANGLES, this->map.mFaces[faceIndex].mNbMeshVertices, GL_UNSIGNED_INT, &(this->map.mMeshVertices[this->map.mFaces[faceIndex].mMeshVertex]));
@@ -168,7 +151,7 @@ int Level::findLeaf(const glm::vec3 &cameraPos) {
         dist = plane.mNormal[0] * cameraPos.x + plane.mNormal[1] * cameraPos.y + plane.mNormal[2] * cameraPos.z - plane.mDistance;
         index = node.mChildren[dist < 0];
     }
-    return - index - 1;
+    return -index - 1;
 }
 
 bool Level::clusterVisible(int actual, int leafCluster) const {
@@ -192,8 +175,7 @@ void Level::generateLightmaps() {
         this->lightmaps[i].width = TEX_WIDTH;
         c = 0;
         for (int y = 0; y < TEX_WIDTH; y++) {
-            for (auto & x : this->map.mLightMaps[i].mMapData) {
-                temp = 0;
+            for (auto &x : this->map.mLightMaps[i].mMapData) {
                 scale = 1.0f;
                 r = ((float) x[y][0]) * brightness / BRIGHTNESS_SCALAR;
                 g = ((float) x[y][1]) * brightness / BRIGHTNESS_SCALAR;
@@ -211,15 +193,15 @@ void Level::generateLightmaps() {
         glGenTextures(1, &this->lightmaps[i].id);
         glBindTexture(GL_TEXTURE_2D, this->lightmaps[i].id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         gluBuild2DMipmaps(
             GL_TEXTURE_2D,
-            GL_RGBA,
+            this->lightmaps[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
             this->lightmaps[i].width,
             this->lightmaps[i].height,
-            GL_RGB,
+            this->lightmaps[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
             GL_UNSIGNED_BYTE,
             this->lightmaps[i].data
         );
@@ -240,7 +222,7 @@ void Level::generateAlbedos() {
         )
     );
     std::string fileName,fileAndExt;
-    char *route;
+    char *path;
 
     int c;
     this->albedos.resize(this->map.mTextures.size());
@@ -261,10 +243,10 @@ void Level::generateAlbedos() {
             fileAndExt = fileName + ext;
             if (fopen(fileAndExt.data(), "r")) {
                 spdlog::info("Loading texture: {}", fileAndExt);
-                route = new char[fileAndExt.size() + 1];
-                strcpy(route, fileAndExt.c_str());
-                this->albedos[i].load(route);
-                delete[] route;
+                path = new char[fileAndExt.size() + 1];
+                strcpy(path, fileAndExt.c_str());
+                this->albedos[i].load(path);
+                delete[] path;
                 opened = true;
             }
         }
@@ -283,10 +265,10 @@ void Level::generateAlbedos() {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         gluBuild2DMipmaps(
             GL_TEXTURE_2D,
-            GL_RGBA,
+            this->albedos[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
             this->albedos[i].width,
             this->albedos[i].height,
-            GL_RGB,
+            this->albedos[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
             GL_UNSIGNED_BYTE,
             this->albedos[i].data
         );
@@ -323,45 +305,38 @@ void Level::checkNode(int nodeIndex, float deltaInitial, float deltaFinal, glm::
         return;
     }
     int side = 0;
-    float fraction1 = 1.0f;
-    float fraction2 = 0.0f;
-    float halfFraction = 0.0f;
-    glm::vec3 half;
+    float delta1 = 1.0f;
+    float delta2 = 0.0f;
+    float deltaMid;
+    glm::vec3 mid;
     if (startDist < endDist) {
         side = 1;
         float inverseDistance = 1.0f / (startDist - endDist);
-        fraction1 = (startDist + offset + EPSILON) * inverseDistance;
-        fraction2 = (startDist - offset - EPSILON) * inverseDistance;
+        delta1 = (startDist - offset - EPSILON) * inverseDistance;
+        delta2 = (startDist + offset + EPSILON) * inverseDistance;
+    } else if (endDist < startDist) {
+        side = 0;
+        float inverseDistance = 1.0f / (startDist - endDist);
+        delta1 = (startDist + offset + EPSILON) * inverseDistance;
+        delta2 = (startDist - offset - EPSILON) * inverseDistance;
     }
-    if (fraction1 < 0.0f) {
-        fraction1 = 0.0f;
-    } else if (fraction2 > 1.0f) {
-        fraction1 = 1.0f;
-    }
-    if (fraction2 < 0.0f) {
-        fraction2 = 0.0f;
-    } else if (fraction2 > 1.0f) {
-        fraction2 = 1.0f;
-    }
-    halfFraction = deltaInitial + (deltaFinal - deltaInitial) * fraction1;
-    half.x = pStart.x + fraction1 * (pFinal.x - pStart.x);
-    half.y = pStart.y + fraction1 * (pFinal.y - pStart.y);
-    half.z = pStart.z + fraction1 * (pFinal.z - pStart.z);
-    checkNode(node->mChildren[side], deltaInitial, halfFraction, pStart, half);
-    halfFraction = deltaInitial + (deltaFinal - deltaInitial) * fraction2;
-    half.x = pStart.x + fraction2 * (pFinal.x - pStart.x);
-    half.y = pStart.y + fraction2 * (pFinal.y - pStart.y);
-    half.z = pStart.z + fraction2 * (pFinal.z = pStart.z);
-    if (side == 1) {
-        checkNode(node->mChildren[0], halfFraction, deltaFinal, half, pFinal);
-    } else {
-        checkNode(node->mChildren[1], halfFraction, deltaFinal, half, pFinal);
-    }
+    delta1 = std::clamp(delta1, 0.0f, 1.0f);
+    delta2 = std::clamp(delta2, 0.0f, 1.0f);
+    deltaMid = deltaInitial + (deltaFinal - deltaInitial) * delta1;
+    mid.x = pStart.x + delta1 * (pFinal.x - pStart.x);
+    mid.y = pStart.y + delta1 * (pFinal.y - pStart.y);
+    mid.z = pStart.z + delta1 * (pFinal.z - pStart.z);
+    checkNode(node->mChildren[side], deltaInitial, deltaMid, pStart, mid);
+    deltaMid = deltaInitial + (deltaFinal - deltaInitial) * delta2;
+    mid.x = pStart.x + delta2 * (pFinal.x - pStart.x);
+    mid.y = pStart.y + delta2 * (pFinal.y - pStart.y);
+    mid.z = pStart.z + delta2 * (pFinal.z = pStart.z);
+    checkNode(node->mChildren[side != 1], deltaMid, deltaFinal, mid, pFinal);
 }
 
 void Level::checkBrush(QBrush* brush, glm::vec3 vOrigin, glm::vec3 vFinal) {
-    float fractionOrigin = -1.0f;
-    float fractionEnd = 1.0f;
+    float deltaOrigin = -1.0f;
+    float deltaEnd = 1.0f;
     bool notAtOrigin = false;
     float offset = 0;
     float originDist;
@@ -380,27 +355,33 @@ void Level::checkBrush(QBrush* brush, glm::vec3 vOrigin, glm::vec3 vFinal) {
         if (originDist > 0) {
             notAtOrigin = true;
         }
+        if (originDist > 0 && endDist > 0) {
+            return;
+        }
+        if (originDist <= 0 && endDist <= 0) {
+            continue;
+        }
         if (originDist > endDist) {
-            float fraction1 = (originDist - EPSILON) / (originDist - endDist);
-            if (fraction1 > fractionOrigin) {
-                fractionOrigin = fraction1;
+            float delta1 = (originDist - EPSILON) / (originDist - endDist);
+            if (delta1 > deltaOrigin) {
+                deltaOrigin = delta1;
                 this->collision = true;
             }
         } else {
-            float fraction1 = (originDist + EPSILON) / (originDist - endDist);
-            if (fraction1 < fractionEnd) {
-                fractionEnd = fraction1;
+            float delta1 = (originDist + EPSILON) / (originDist - endDist);
+            if (delta1 < deltaEnd) {
+                deltaEnd = delta1;
             }
         }
     }
     if (!notAtOrigin) {
         return;
     }
-    if (fractionOrigin < fractionEnd && fractionOrigin > -1 && fractionOrigin < this->outputDelta) {
-        if (fractionOrigin < 0) {
-            fractionOrigin = 0;
+    if (deltaOrigin < deltaEnd && deltaOrigin > -1 && deltaOrigin < this->outputDelta) {
+        if (deltaOrigin < 0) {
+            deltaOrigin = 0;
         }
-        this->outputDelta = fractionOrigin;
+        this->outputDelta = deltaOrigin;
     }
 }
 

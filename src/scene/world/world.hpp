@@ -10,6 +10,7 @@
 #include "../../core/timing/highResTimer.hpp"
 #include "../element/entity/entity.hpp"
 #include "level.hpp"
+#include "../element/terrain/terrain.hpp"
 
 class World {
 protected:
@@ -19,6 +20,7 @@ protected:
 
 public:
 	Camera* camera;
+    Terrain* terrain;
 	// AudioSystem* audioSystem;
 	// std::map<std::string, Audio*> tracks;
 
@@ -33,7 +35,7 @@ public:
 	void unload();
 	void animate(float deltaTime) const;
 	void draw(Camera* _camera) const;
-	static void init();
+    void init() { onInit(); };
 };
 
 #endif // WORLD_H

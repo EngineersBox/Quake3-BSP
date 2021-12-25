@@ -30,7 +30,6 @@ private:
 
 	void convertEdges();
     void bindLightmapAndTexture(int faceIndex);
-	void drawTriangle(int faceIndex);
 	void drawTriangleVA(int faceIndex);
 	void drawTriangleMesh(int faceIndex);
 
