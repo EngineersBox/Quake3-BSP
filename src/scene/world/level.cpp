@@ -102,13 +102,14 @@ void Level::onDraw(Camera* camera) {
 			int faceIndex = this->map.mLeafFaces[leaf->mLeafFace + nFaces].mFaceIndex;
 			if (this->map.mFaces[faceIndex].mType == 1) {
 				drawTriangleVA(faceIndex);
-			}
-			if (this->map.mFaces[faceIndex].mType == 3) {
+			} else if (this->map.mFaces[faceIndex].mType == 3) {
 				drawTriangleMesh(faceIndex);
 			}
 			this->triangles++;
 		}
 	}
+
+    RasterText::renderText(std::string("Triangles: ") + std::to_string(this->triangles), "/Users/jackkilrain/Desktop/Projects/C:C++/Quake-Id-Tech-2/arial.ttf", SDL_Color{255,255,255}, 90);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
@@ -124,6 +125,7 @@ inline void Level::bindLightmapAndTexture(int faceIndex) {
         glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mTextureIndex].id);
     }
 // TODO: Fix this lightmapping
+
 //    if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
 //        glActiveTexture(GL_TEXTURE1);
 //        glClientActiveTexture(GL_TEXTURE1);
@@ -307,8 +309,7 @@ void Level::checkNode(int nodeIndex, float deltaInitial, float deltaFinal, glm::
     float offset = 0;
     if (this->traceType == TRACE_TYPE_SPHERE) {
         offset = this->sphereRadius;
-    }
-    if (this->traceType == TRACE_TYPE_RAY) {
+    } else if (this->traceType == TRACE_TYPE_RAY) {
         offset = 0.0;
     }
     if (startDist >= offset && endDist >= offset) {

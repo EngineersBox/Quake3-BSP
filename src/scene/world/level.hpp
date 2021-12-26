@@ -24,6 +24,7 @@
 #include "../../view/camera.hpp"
 #include "../../view/frustum.hpp"
 #include "../element/element.hpp"
+#include "../../core/text/rasterText.hpp"
 
 class Level : public Element {
 private:

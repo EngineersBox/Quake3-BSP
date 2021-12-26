@@ -36,6 +36,10 @@ target_link_libraries(Quake PRIVATE SDL2::SDL2 SDL2::SDL2main)
 find_package(sdl2-image CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE SDL2::SDL2_image)
 
+# Configure SDL2_TTF
+find_package(sdl2-ttf CONFIG REQUIRED)
+target_link_libraries(Quake PRIVATE SDL2::SDL2_ttf)
+
 # Configure OpenGL
 find_package(OpenGL REQUIRED)
 target_include_directories(Quake PUBLIC ${OPENGL_INCLUDE_DIR})
@@ -46,6 +50,6 @@ target_link_libraries(Quake PUBLIC ${OPENGL_LIBRARIES})
 find_package(glm CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE glm::glm)
 
-#Configure spdlog
+# Configure spdlog
 find_package(spdlog CONFIG REQUIRED)
 target_link_libraries(Quake PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
