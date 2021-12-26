@@ -74,6 +74,13 @@ void Level::onDraw(Camera* camera) {
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
+    glFogi(GL_FOG_MODE, GL_LINEAR);
+    glFogfv(GL_FOG_COLOR, this->fogColor);
+    glFogf(GL_FOG_START, this->fogStart);
+    glFogf(GL_FOG_END, this->fogEnd);
+    glHint(GL_FOG_HINT, GL_FASTEST);
+    glEnable(GL_FOG);
+
 	int leafIndex = findLeaf(camera->position);
 	int cluster = this->map.mLeaves[leafIndex].mCluster;
 
@@ -117,7 +124,6 @@ inline void Level::bindLightmapAndTexture(int faceIndex) {
         glBindTexture(GL_TEXTURE_2D, this->albedos[this->map.mFaces[faceIndex].mTextureIndex].id);
     }
 // TODO: Fix this lightmapping
-
 //    if (this->map.mFaces[faceIndex].mLightmapIndex >= 0) {
 //        glActiveTexture(GL_TEXTURE1);
 //        glClientActiveTexture(GL_TEXTURE1);
@@ -192,21 +198,25 @@ void Level::generateLightmaps() {
                 c += 3;
             }
         }
+
         glGenTextures(1, &this->lightmaps[i].id);
         glBindTexture(GL_TEXTURE_2D, this->lightmaps[i].id);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        gluBuild2DMipmaps(
-            GL_TEXTURE_2D,
-            this->lightmaps[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
-            this->lightmaps[i].width,
-            this->lightmaps[i].height,
-            this->lightmaps[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
-            GL_UNSIGNED_BYTE,
-            this->lightmaps[i].data
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                this->lightmaps[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
+                this->lightmaps[i].width,
+                this->lightmaps[i].height,
+                0,
+                this->lightmaps[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
+                GL_UNSIGNED_BYTE,
+                this->lightmaps[i].data
         );
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     }
 }
 
@@ -260,20 +270,22 @@ void Level::generateAlbedos() {
 
         glGenTextures(1, &this->albedos[i].id);
         glBindTexture(GL_TEXTURE_2D, this->albedos[i].id);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        gluBuild2DMipmaps(
+        glTexImage2D(
             GL_TEXTURE_2D,
+            0,
             this->albedos[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
             this->albedos[i].width,
             this->albedos[i].height,
+            0,
             this->albedos[i].bitDepth == 24 ? GL_RGB : GL_RGBA,
             GL_UNSIGNED_BYTE,
             this->albedos[i].data
         );
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     }
 }
 

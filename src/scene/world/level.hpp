@@ -5,11 +5,14 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #include <Windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#else
-#include <OpenGL/gl.h>
+#endif
+#if defined(__APPLE__)
+#define GL_SILENCE_DEPRECATION
+#include <OpenGl/gl.h>
 #include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glut.h>
 #endif
 
 #include <string>
@@ -42,8 +45,6 @@ private:
 	// Collisions
 	int traceType;
 	float sphereRadius;
-	glm::vec3 boxMin;
-	glm::vec3 boxMax;
 	void checkNode(int nodeIndex, float deltaInitial, float deltaFinal, glm::vec3 pStart, glm::vec3 pFinal);
 	void checkBrush(QBrush* brush, glm::vec3 vOrigin, glm::vec3 vFinal);
 protected:
@@ -53,6 +54,9 @@ protected:
 public:
 	int triangles;
 	Frustum frustum;
+    float fogColor[4]{0.75f, 0.9f, 1.0f, 1.0f};
+    float fogStart = 10.0f;
+    float fogEnd = 3000.0f;
 
 	// Collisions
 	bool collision;

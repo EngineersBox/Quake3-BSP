@@ -6,7 +6,7 @@ Camera::Camera() {
 	this->forward = this->lookAtV;
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);
-	this->velocity = glm::vec3(0.0, 0.0, 0.0);
+	this->horizontalVelocity = glm::vec3(0.0, 0.0, 0.0);
 	this->acceleration = glm::vec3(0.0, 0.0, 0.0);
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;
@@ -18,7 +18,7 @@ Camera::Camera(glm::vec3* look) {
 	this->forward = this->lookAtV;
 	this->up = glm::vec3(0.0, 0.0, 0.0);
 	this->right = glm::cross(this->forward, this->up);
-	this->velocity = glm::vec3(0.0, 0.0, 0.0);
+	this->horizontalVelocity = glm::vec3(0.0, 0.0, 0.0);
 	this->acceleration = glm::vec3(0.0, 0.0, 0.0);
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;
@@ -30,7 +30,7 @@ Camera::Camera(glm::vec3* pos, glm::vec3* look) {
 	this->forward = this->lookAtV;
 	this->up = glm::vec3(0.0, 1.0, 0.0);
 	this->right = glm::vec3(1.0, 0.0, 0.0);
-	this->velocity = glm::vec3(0.0, 0.0, 0.0);
+	this->horizontalVelocity = glm::vec3(0.0, 0.0, 0.0);
 	this->acceleration = glm::vec3(0.0, 0.0, 0.0);
 	this->yaw = 0.0f;
 	this->pitch = 0.0f;
@@ -53,7 +53,7 @@ void Camera::updateMoveTo() {
 		this->finalPosition.y - this->position.y,
 		this->finalPosition.z - this->position.z
 	);
-	this->velocity = pos * 0.5f;
+	this->horizontalVelocity = pos * 0.5f;
 }
 
 inline float vecLength(glm::vec3 vec) {
@@ -125,16 +125,16 @@ void Camera::animate(float deltaTime) {
 	auto sinYaw = (float)sin(glm::radians(this->yaw));
 	auto sinPitch = (float)sin(glm::radians(this->pitch));
 
-	float speed = this->velocity.z * deltaTime;
-	float strafeSpeed = this->velocity.x * deltaTime;
+	float speed = this->horizontalVelocity.z * deltaTime;
+	float strafeSpeed = this->horizontalVelocity.x * deltaTime;
 
 	if (speed > SPEED_CAP) speed = SPEED_CAP;
 	if (strafeSpeed > SPEED_CAP) strafeSpeed = SPEED_CAP;
 	if (speed < -SPEED_CAP) speed = -SPEED_CAP;
 	if (strafeSpeed < -SPEED_CAP) strafeSpeed = -SPEED_CAP;
 
-	if (vecLength(velocity) > 0.0f) this->acceleration = -this->velocity * 1.5f;
-	this->velocity += this->acceleration * deltaTime;
+	if (vecLength(horizontalVelocity) > 0.0f) this->acceleration = -this->horizontalVelocity * 1.5f;
+	this->horizontalVelocity += this->acceleration * deltaTime;
 
 	this->position.x += ((float)(cos(glm::radians(this->yaw + 90.0f)))) * strafeSpeed;
 	this->position.z += ((float)(sin(glm::radians(this->yaw + 90.0f)))) * strafeSpeed;

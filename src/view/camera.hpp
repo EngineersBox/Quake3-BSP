@@ -5,11 +5,14 @@
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #include <Windows.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#else
+#endif
+#if defined(__APPLE__)
+#define GL_SILENCE_DEPRECATION
 #include <OpenGl/gl.h>
 #include <OpenGL/glu.h>
+#else
+#include <GL/gl.h>
+#include <GL/glut.h>
 #endif
 
 #include <glm/glm.hpp>
@@ -30,7 +33,7 @@ private:
 public:
 	glm::vec3 position;
 	glm::vec3 prevPosition;
-	glm::vec3 velocity;
+	glm::vec3 horizontalVelocity;
 	glm::vec3 acceleration;
 	glm::vec3 lookAtV;
 	glm::vec3 up;

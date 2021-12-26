@@ -8,10 +8,6 @@ Terrain::Terrain() {
     this->textureMul = 0.25;
     this->widthScale = 5.0;
     this->heightMul = 175.0;
-    this->fogColor[0] = 0.75f;
-    this->fogColor[1] = 0.9f;
-    this->fogColor[2] = 1.0f;
-    this->fogColor[3] = 1.0f;
 
     this->position = glm::vec3(0,0,0);
     this->velocity = glm::vec3(0,0,0);
@@ -28,10 +24,6 @@ Terrain::Terrain(int _width, float rFactor) {
     this->textureMul = 0.25;
     this->widthScale = 5.0;
     this->heightMul = 175.0;
-    this->fogColor[0] = 0.75f;
-    this->fogColor[1] = 0.9f;
-    this->fogColor[2] = 1.0f;
-    this->fogColor[3] = 1.0f;
 
     this->position = glm::vec3(0,0,0);
     this->velocity = glm::vec3(0,0,0);
@@ -69,13 +61,6 @@ void Terrain::onCollision(Element *element) {}
 
 void Terrain::onDraw(Camera* camera) {
     glEnable(GL_DEPTH_TEST);
-
-    glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogfv(GL_FOG_COLOR, this->fogColor);
-    glFogf(GL_FOG_START, this->scanDepth * 0.1f);
-    glFogf(GL_FOG_END, this->scanDepth * 2);
-    glHint(GL_FOG_HINT, GL_FASTEST);
-//    glEnable(GL_FOG);
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);

@@ -39,19 +39,22 @@ constexpr float velocityIncDelta = 2.5f;
 void GEngine::onKeyDown(SDL_Scancode nVirtKey) {
 	switch (nVirtKey) {
 	case SDL_SCANCODE_W:
-		this->gameCamera->velocity += glm::vec3(0.0, 0.0, velocityIncDelta);
+		this->gameCamera->horizontalVelocity += glm::vec3(0.0, 0.0, velocityIncDelta);
 		break;
 	case SDL_SCANCODE_S:
-		this->gameCamera->velocity += glm::vec3(0, 0, -velocityIncDelta);
+		this->gameCamera->horizontalVelocity += glm::vec3(0, 0, -velocityIncDelta);
 		break;
 	case SDL_SCANCODE_A:
-		this->gameCamera->velocity += glm::vec3(-velocityIncDelta, 0.0, 0.0);
+		this->gameCamera->horizontalVelocity += glm::vec3(-velocityIncDelta, 0.0, 0.0);
 		break;
 	case SDL_SCANCODE_D:
-		this->gameCamera->velocity += glm::vec3(velocityIncDelta, 0.0, 0.0);
+		this->gameCamera->horizontalVelocity += glm::vec3(velocityIncDelta, 0.0, 0.0);
 		break;
     case SDL_SCANCODE_SPACE:
-        this->gameCamera->velocity += glm::vec3(0.0, velocityIncDelta, 0.0);
+        this->gameCamera->moveTo(this->gameCamera->position + glm::vec3(0, 5.0, 0.0));
+        break;
+    case SDL_SCANCODE_LSHIFT:
+        this->gameCamera->moveTo(this->gameCamera->position + glm::vec3(0, -5.0, 0.0));
         break;
 	case SDL_SCANCODE_F:
 		if (this->fullscreen) this->stopFullscreen();

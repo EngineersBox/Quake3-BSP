@@ -26,7 +26,6 @@ protected:
 public:
     float* heightMap;
     Material::Texture terrainTexture[5];
-    float fogColor[4];
 
     Terrain();
     Terrain(int _width, float rFactor);
